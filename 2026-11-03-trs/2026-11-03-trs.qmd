@@ -70,7 +70,7 @@ execute:
 
 \begin{center}
   \vspace*{1em}
-  {\Large \textbf{Spectral Degeneracies of a Topmost-to-Random Shuffle on Balanced Binary Words}}\\[1.5em]
+  {\Large \textbf{Spectral Degeneracies of a Top-to-Random Shuffle on Balanced Binary Words}}\\[1.5em]
   {\large A note based on discussions with Professor Steven N. Evans}\\[1.0em]
   {\normalsize 2026-11-03}\\[1em]
 \end{center}
@@ -104,13 +104,13 @@ The state space is the set of words of length $2n$ with $n$ letters R and $n$ le
 
 ## Transitions
 
-We identify the topmost card of a deck with the leftmost letter of the word, so that the current word is $x_1 x_2 \cdots x_{2n}$ with $x_1$ as the topmost (leftmost) letter. At each step, this topmost letter is removed and inserted uniformly at random into one of the $2n$ slots defined by the remaining $2n-1$ letters — a "topmost-to-random" (equivalently, leftmost-to-random) insertion, as opposed to the usual top-to-random shuffle on a deck of distinct cards. Equivalently, remove $x_1$ to leave $y = x_2 \cdots x_{2n}$, and choose uniformly $j \in \{0,1,\dots,2n-1\}$; the new word is $y$ with $x_1$ inserted after the $j$-th symbol of $y$ (with $j=0$ meaning at the front, i.e. returned to the top). Each slot is chosen with probability $1/(2n)$, so every row of the transition matrix has exactly $2n$ entries (some possibly equal, if two slots produce the same word), each equal to $1/(2n)$. In the notation of the thesis, $P_n = (P_n(\sigma, \tau))_{\sigma, \tau \in \mathcal{S}_n}$ and $P_n(\sigma, \tau) = \frac{1}{2n} \cdot \#\{\text{insertion positions that turn } \sigma \text{ into } \tau\}$.
+We identify the top card of a deck with the leftmost letter of the word, so that the current word is $x_1 x_2 \cdots x_{2n}$ with $x_1$ as the top (leftmost) letter. At each step, this top letter is removed and inserted uniformly at random into one of the $2n$ slots defined by the remaining $2n-1$ letters — a "top-to-random" (equivalently, leftmost-to-random) insertion, as opposed to the usual top-to-random shuffle on a deck of distinct cards. Equivalently, remove $x_1$ to leave $y = x_2 \cdots x_{2n}$, and choose uniformly $j \in \{0,1,\dots,2n-1\}$; the new word is $y$ with $x_1$ inserted after the $j$-th symbol of $y$ (with $j=0$ meaning at the front, i.e. returned to the top). Each slot is chosen with probability $1/(2n)$, so every row of the transition matrix has exactly $2n$ entries (some possibly equal, if two slots produce the same word), each equal to $1/(2n)$. In the notation of the thesis, $P_n = (P_n(\sigma, \tau))_{\sigma, \tau \in \mathcal{S}_n}$ and $P_n(\sigma, \tau) = \frac{1}{2n} \cdot \#\{\text{insertion positions that turn } \sigma \text{ into } \tau\}$.
 
 ## The transition matrix
 
 ### n = 1
 
-The states are RG and GR, so $\binom{2}{1}=2$. Take the word RG: the topmost letter is R, and removing it leaves G, which defines the two slots _G_ (before G and after G). Inserting R into slot 1 returns RG, and inserting into slot 2 gives GR, each with probability $1/2$. Take the word GR: the topmost letter is G, and removing it leaves R, with slots _R_ (before R and after R). Inserting G into slot 1 returns GR, and inserting into slot 2 gives RG, each with probability $1/2$. In R/G form:
+The states are RG and GR, so $\binom{2}{1}=2$. Take the word RG: the top letter is R, and removing it leaves G, which defines the two slots _G_ (before G and after G). Inserting R into slot 1 returns RG, and inserting into slot 2 gives GR, each with probability $1/2$. Take the word GR: the top letter is G, and removing it leaves R, with slots _R_ (before R and after R). Inserting G into slot 1 returns GR, and inserting into slot 2 gives RG, each with probability $1/2$. In R/G form:
 
 - RG $\to$ RG (prob $1/2$), RG $\to$ GR (prob $1/2$);
 - GR $\to$ GR (prob $1/2$), GR $\to$ RG (prob $1/2$).
@@ -123,7 +123,7 @@ $$
 
 ### n = 2
 
-The states are RRGG, RGRG, RGGR, GRRG, GRGR, GGRR, in lexicographic order with R $<$ G, so $\binom{4}{2}=6$. Take each state in turn and remove its topmost letter, leaving three letters that define four slots.
+The states are RRGG, RGRG, RGGR, GRRG, GRGR, GGRR, in lexicographic order with R $<$ G, so $\binom{4}{2}=6$. Take each state in turn and remove its top letter, leaving three letters that define four slots.
 
 - **RRGG**: remove R, leaving RGG with slots _R_G_G_. Slot 1 gives RRGG, slot 2 gives RRGG, slot 3 gives RGRG, slot 4 gives RGGR. So RRGG $\to$ RRGG ($2/4$), RGRG ($1/4$), RGGR ($1/4$).
 - **RGRG**: remove R, leaving GRG with slots _G_R_G_. Slot 1 gives RGRG, slot 2 gives GRRG, slot 3 gives GRRG, slot 4 gives GRGR. So RGRG $\to$ RGRG ($1/4$), GRRG ($2/4$), GRGR ($1/4$).
@@ -147,7 +147,7 @@ $$
 
 ### n = 3
 
-The states are RRRGGG, RRGRGG, RRGGRG, RRGGGR, RGRRGG, RGRGRG, RGRGGR, RGGRRG, RGGRGR, RGGGRR, GRRRGG, GRRGRG, GRRGGR, GRGRRG, GRGRGR, GRGGRR, GGRRRG, GGRRGR, GGRGRR, GGGRRR, in lexicographic order with R $<$ G, so $\binom{6}{3}=20$. Removing the topmost letter of each state leaves five letters that define six slots. The transitions, in R/G form, are:
+The states are RRRGGG, RRGRGG, RRGGRG, RRGGGR, RGRRGG, RGRGRG, RGRGGR, RGGRRG, RGGRGR, RGGGRR, GRRRGG, GRRGRG, GRRGGR, GRGRRG, GRGRGR, GRGGRR, GGRRRG, GGRRGR, GGRGRR, GGGRRR, in lexicographic order with R $<$ G, so $\binom{6}{3}=20$. Removing the top letter of each state leaves five letters that define six slots. The transitions, in R/G form, are:
 
 - RRRGGG $\to$ RRRGGG ($2/6$), RRGRGG ($1/6$), RRGGRG ($1/6$), RRGGGR ($2/6$);
 - RRGRGG $\to$ RRGRGG ($2/6$), RGRRGG ($1/6$), RGRGRG ($1/6$), RGRGGR ($2/6$);
@@ -986,7 +986,7 @@ plt.show()
 
 ## Representation-theoretic structure
 
-The balanced-word state space admits a natural description in terms of representations of the symmetric group. This provides a possible route toward understanding the spectral multiplicities of the topmost-to-random operator.
+The balanced-word state space admits a natural description in terms of representations of the symmetric group. This provides a possible route toward understanding the spectral multiplicities of the top-to-random operator.
 
 ### The balanced-word permutation module
 

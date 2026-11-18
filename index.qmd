@@ -11,6 +11,6 @@ subtitle: "Welcome to my research notes."
 
 *A note based on discussions with Professor Steven N. Evans, 2026-11-10*
 
-[Spectral Degeneracies of a Topmost-to-Random Shuffle on Balanced Binary Words](/2026-11-03-trs/index.html)
+[Spectral Degeneracies of a Top-to-Random Shuffle on Balanced Binary Words](/2026-11-03-trs/index.html)
 
 *A note based on discussions with Professor Steven N. Evans, 2026-11-03*
