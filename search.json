@@ -277,7 +277,7 @@
     "href": "2026-11-03-trs/index.html",
     "title": "Spectral Degeneracies of a Top-to-Random Shuffle on Balanced Binary Words",
     "section": "",
-    "text": "Abstract. Here is the revised abstract with “In this note:” removed, ready to be dropped straight into your November 3 .qmd file:",
+    "text": "Abstract. Let \\(\\Omega_n\\) be the set of words containing \\(n\\) letters \\(\\mathtt{R}\\) and \\(n\\) letters \\(\\mathtt{G}\\). At each step, the leftmost letter is removed and reinserted, uniformly at random, into one of the \\(2n\\) slots determined by the remaining \\(2n-1\\) letters. We examine the spectral properties of this balanced-word top-to-random chain for parameters \\(n \\le 9\\). By utilizing a complement-pairing symmetry, we block-diagonalize the transition matrix into symmetric and antisymmetric components to compute its exact spectrum. We show that the eigenvalues take the form \\(1 - k/(2n)\\) for \\(k \\in \\{0\\} \\cup \\{2, 3, \\dots, 2n\\}\\), with the \\(k=1\\) eigenvalue systematically absent across all \\(n \\ge 1\\) due to inheritance from the parent top-to-random shuffle on \\(S_{2n}\\). Furthermore, we explore the representation-theoretic structure of the state space via Young’s rule decomposition into Specht modules \\(S^{(2n-j,j)}\\), analyze the partition function as a transfer-matrix reformulation, and discuss empirical mixing times relative to the classical \\(n \\log n\\) scale.",
     "crumbs": [
       "Thesis notes",
       "TRS spectrum (2026-11-03)"
