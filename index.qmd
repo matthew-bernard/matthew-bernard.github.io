@@ -1,0 +1,16 @@
+---
+title: "Home"
+subtitle: "Welcome to my research notes."
+---
+
+[GitHub](https://github.com/matthew-bernard){.btn .btn-primary target="_blank" rel="noopener noreferrer"}
+
+## Recent updates
+
+[Spectrum of the Top-to-Random Chain on Two-Coloured Words](/2026-11-10-trs/index.html)
+
+*A note based on discussions with Professor Steven N. Evans, 2026-11-10*
+
+[Spectral Degeneracies of a Topmost-to-Random Shuffle on Balanced Binary Words](/2026-11-03-trs/index.html)
+
+*A note based on discussions with Professor Steven N. Evans, 2026-11-03*

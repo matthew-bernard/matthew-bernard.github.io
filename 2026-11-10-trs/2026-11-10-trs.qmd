@@ -1,0 +1,1820 @@
+---
+bibliography: references.bib    # Keeps your bibliography wired up
+nocite: |
+  @*                            # Keeps all references force-printing
+format:
+  pdf:
+    documentclass: article
+    papersize: letter
+    geometry:
+      - margin=0.75in
+    pdf-engine: xelatex
+    fontsize: 10pt
+    colorlinks: true
+    linkcolor: "blue!50!black"
+    citecolor: "blue!50!black"
+    urlcolor: "blue!50!black"
+    code-overflow: wrap
+    include-in-header:
+      text: |
+        \usepackage{amsmath,amssymb,amsthm,mathtools}
+        \usepackage{booktabs,array}
+        \usepackage{enumitem}
+        \usepackage{microtype}
+        \usepackage{xcolor}
+        \usepackage{listings}
+        \usepackage{fvextra}
+        \usepackage{underscore}
+        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\},fontsize=\small}
+        \RecustomVerbatimEnvironment{verbatim}{Verbatim}{fontsize=\small,breaklines=true,breakanywhere=true}
+
+        \numberwithin{equation}{section}
+        \numberwithin{table}{section}
+
+        \newcommand{\w}[1]{\ensuremath{\mathtt{#1}}}
+        \newcommand{\Sy}{\mathfrak{S}}
+        \newcommand{\CC}{\mathbb{C}}
+        \newcommand{\QQ}{\mathbb{Q}}
+        \newcommand{\ZZ}{\mathbb{Z}}
+        \newcommand{\Om}{\Omega_n}
+        \newcommand{\abs}[1]{\lvert #1\rvert}
+        \newcommand{\inner}[2]{\langle #1,\,#2\rangle}
+        \DeclareMathOperator{\ch}{ch}
+        \DeclareMathOperator{\Ind}{Ind}
+        \DeclareMathOperator{\tr}{tr}
+        \DeclareMathOperator{\Imag}{Im}
+
+        \lstset{language=Python, basicstyle=\ttfamily\scriptsize, columns=fullflexible,
+                keepspaces=true, breaklines=true, frame=single, numbers=left,
+                numberstyle=\tiny, numbersep=6pt, showstringspaces=false, upquote=true,
+                commentstyle=\color{black!60}, stringstyle=\color{black!80}}
+        \renewcommand{\arraystretch}{1.12}
+
+        \AtEndPreamble{\usepackage[capitalise,nameinlink]{cleveref}}
+        \AtEndPreamble{\crefname{table}{Table}{Tables}}
+  html:
+    output-file: "index.html"
+    title: "Spectrum of the Top-to-Random Chain on Two-Coloured Words"
+    subtitle: "A note based on discussions with Professor Steven N. Evans"
+    date: "2026-11-10"
+    theme: cosmo
+    toc: true
+    code-fold: true
+    html-math-method: mathjax
+execute:
+  echo: true
+  warning: false
+  message: false
+  freeze: true
+---
+
+\begin{center}
+  \vspace*{1em}
+  {\Large \textbf{Spectrum of the Top-to-Random Chain on Two-Coloured Words}}\\[1.0em]
+  {\large A note based on discussions with Professor Steven N. Evans}\\[1.0em]
+  {\normalsize 2026-11-10}\\[1em]
+\end{center}
+
+\vspace{1em}
+
+> **Abstract.** Let $\Omega_n$ be the set of words containing $n$ letters $\mathtt{R}$ and $n$ letters $\mathtt{G}$.
+> At each step the leftmost letter is removed and reinserted, uniformly at random, into
+> one of the $2n$ slots determined by the remaining $2n-1$ letters. We show that the
+> transition matrix is diagonalizable, that its eigenvalues are $1$ and $j/(2n)$ for
+> $0\le j\le 2n-2$, and that $j/(2n)$ has multiplicity equal to the number of words of
+> length $2n-2-j$ in $\mathtt{R},\mathtt{G}$ with at most $n-1$ copies of each letter. The proof
+> lumps the chain from the top-to-random shuffle of $2n$ distinct cards and determines
+> the $\mathfrak{S}_{2n}$-module structure of the eigenspaces of that shuffle by an equivariant
+> filtration in the spirit of Brown's theory of left-regular bands. We work out the
+> cases $n\le 6$ in detail; give equivalent forms of the multiplicities, a Pascal-type
+> recurrence and a generating function; prove that the multiplicities in the lower half
+> of the spectrum have no hypergeometric closed form; split the spectrum along the
+> Specht modules $S^{(2n-i,i)}$; prove that the colour-symmetric and colour-antisymmetric
+> parts have the same spectrum apart from the two largest eigenvalues; and examine a
+> proposed binomial formula for the multiplicities.
+
+\vspace{1.5em}
+\tableofcontents
+\vspace{1.5em}
+
+
+# The chain and the main result {#sec-intro}
+
+## The chain
+
+Fix $n\ge 1$ and put $N=2n$. Let $\Omega_n$ be the set of words of length $N$ in the letters
+$\mathtt{R}$ and $\mathtt{G}$ that contain $n$ of each, so $\lvert \Omega_n\rvert=\binom{2n}{n}$. One step of
+the chain removes the leftmost letter of the current word. The remaining $N-1$ letters
+determine $N$ slots (before the first letter, between consecutive letters, and after
+the last), and the removed letter is inserted into one of them, chosen uniformly at
+random. Thus
+
+$$
+P(w,w')=\frac1N\,\#\{\text{slots whose use turns $w$ into $w'$}\}.
+$$
+
+For example, from $\mathtt{RGRG}$ we remove $\mathtt{R}$ and are left with $\mathtt{GRG}$; the four
+insertions give $\mathtt{RGRG}$, $\mathtt{GRRG}$, $\mathtt{GRRG}$, $\mathtt{GRGR}$, so $P(\mathtt{RGRG},\cdot\,)$
+puts mass $\tfrac14,\tfrac12,\tfrac14$ on $\mathtt{RGRG}$, $\mathtt{GRRG}$, $\mathtt{GRGR}$.
+
+The matrix $P$ acts on functions $f\colon\Omega_n\to\mathbb{C}$ by $(Pf)(w)=\sum_{w'}P(w,w')f(w')$.
+Inserting the removed letter into the $p$-th slot moves the first letter to position
+$p$. Regarding a word as a map $w\colon[N]\to\{\mathtt{R},\mathtt{G}\}$ from positions to letters,
+this says
+
+$$
+(Pf)(w)=\frac1N\sum_{p=1}^{N}f(w\circ\pi_p),\qquad
+\pi_p(q)=\begin{cases}q+1,&q<p,\\ 1,&q=p,\\ q,&q>p,\end{cases}
+$$ {#eq-pperm}
+
+with $\pi_p\in\mathfrak{S}_N$ a permutation of positions. We use this description in
+@sec-proof and @sec-specht.
+
+## Conventions
+
+Throughout, $j$ is the numerator of an eigenvalue $j/N$ and
+
+$$
+L=N-2-j .
+$$
+
+Binomial coefficients $\binom{L}{i}$ with $L\ge0$ vanish unless $0\le i\le L$. We write
+$B(L,k)=\sum_{i=0}^{k}\binom{L}{i}$ for partial row sums of Pascal's triangle,
+$d_m$ for the number of derangements of $m$ objects, and $C_n=\binom{2n}{n}/(n+1)$ for
+the Catalan numbers.
+
+## The main result
+
+::: {#thm-main}
+
+The matrix $P$ is diagonalizable. Its eigenvalues are $1$, with multiplicity $1$, and
+$j/N$ for $0\le j\le N-2$, with multiplicity
+
+$$
+m_n(j)=\sum_{i=\max(0,\,L-n+1)}^{\min(L,\,n-1)}\binom{L}{i},\qquad L=N-2-j,
+$$ {#eq-main}
+
+which is the number of words of length $L$ in $\mathtt{R}$ and $\mathtt{G}$ that contain at most
+$n-1$ copies of each letter. In particular $(N-1)/N$ is not an eigenvalue. Setting
+$m_n(N-1)=0$ and $m_n(N)=1$, we have for every $0\le j\le N$
+
+$$
+m_n(j)=\sum_{\substack{r+g=j\\ 0\le r,\,g\le n}} D(n-r,\,n-g),\qquad
+D(a,b)=\begin{cases}\binom{a+b-2}{a-1},& a,b\ge 1,\\ 1,& a=b=0,\\
+0,&\text{otherwise.}\end{cases}
+$$ {#eq-dform}
+
+:::
+
+The multiplicities for $n\le 6$ are listed in @tbl-small; they agree with the
+spectra computed directly from the matrices (@sec-small and @sec-verification).
+
+| $n$ | $\lvert \Omega_n\rvert$ | multiplicities of $N/N,\ (N-1)/N,\ \dots,\ 0/N$ |
+|--:|----------------------:|:---------------------------------------|
+| 1 | 2 | 1, 0, 1 |
+| 2 | 6 | 1, 0, 1, 2, 2 |
+| 3 | 20 | 1, 0, 1, 2, 4, 6, 6 |
+| 4 | 70 | 1, 0, 1, 2, 4, 8, 14, 20, 20 |
+| 5 | 252 | 1, 0, 1, 2, 4, 8, 16, 30, 50, 70, 70 |
+| 6 | 924 | 1, 0, 1, 2, 4, 8, 16, 32, 62, 112, 182, 252, 252 |
+
+: Multiplicities of the eigenvalues $N/N,(N-1)/N,\dots,1/N,0$, from the top. {#tbl-small}
+
+::: {.remark}
+
+**Distinct cards.** For the top-to-random shuffle of $N$ distinct cards the eigenvalues are again $j/N$,
+$j\in\{0,\dots,N-2,N\}$, and $j/N$ has multiplicity $\binom{N}{j}d_{N-j}$, the number of
+permutations of $[N]$ with exactly $j$ fixed points [@BHR99; @BD98; @Br00; @DFP92]. The
+value $(N-1)/N$ is missing for the same reason as here: $d_1=0$. @eq-dform is the coloured analogue of $\sum_{\lvert X\rvert=j}d_{N-j}$: subsets $X$ of
+the cards are replaced by sub-multisets with $r$ red and $g$ green cards, and the
+derangement number $d_{N-j}$ of the remaining cards is replaced by the
+*coloured derangement number* $D(a,b)$ of the remaining $a$ red and $b$ green
+cards. For $(a,b)\ne(0,0)$, $D(a,b)$ is the number of words with $a$ letters $\mathtt{R}$
+and $b$ letters $\mathtt{G}$ that begin with $\mathtt{R}$ and end with $\mathtt{G}$.
+
+:::
+
+::: {.remark}
+
+**Plan.** @sec-swap makes the colour-swap symmetry precise, and @sec-small works
+out $n=1,2,3,5$. @sec-forms gives equivalent forms of @eq-main.
+@sec-proof proves @thm-main in three steps: the chain is a lumping of the
+distinct-card shuffle (@prp-lump); the $\mathfrak{S}_N$-module structure of the
+eigenspaces of the distinct-card shuffle is determined by an equivariant filtration
+(@thm-equivariant); and Frobenius reciprocity counts the invariants. The same
+argument handles decks of arbitrary content (@cor-content). @sec-simplify
+discusses how far @eq-main simplifies, including a proof that the lower half
+of the spectrum has no hypergeometric closed form (@thm-noclosed).
+@sec-specht splits the spectrum along Specht modules and proves the
+colour-swap theorem (@thm-swap). @sec-proposed examines a proposed binomial
+formula, and @sec-verification lists the computer checks; the code is in
+[Appendix A](#app-code).
+
+:::
+
+# The colour-swap symmetry {#sec-swap}
+
+Let $\sigma\colon\Omega_n\to\Omega_n$ exchange $\mathtt{R}$ and $\mathtt{G}$ in every position, so for
+instance $\sigma(\mathtt{RRGRGG})=\mathtt{GGRGRR}$.
+
+- $\sigma$ is an involution without fixed points (it changes the first letter), so
+  $\Omega_n$ splits into $\binom{2n}{n}/2$ pairs $\{x,\sigma x\}$.
+- The chain does not see the names of the colours: $P(\sigma x,\sigma y)=P(x,y)$.
+
+Let $(Sf)(x)=f(\sigma x)$. Then $S^2=I$ and $SP=PS$. Put
+
+$$
+V_+=\{f:\ f(\sigma x)=f(x)\ \text{for all }x\},\qquad
+V_-=\{f:\ f(\sigma x)=-f(x)\ \text{for all }x\}.
+$$
+
+::: {#prp-swap}
+
+The two parts have the following properties.
+
+\(i) $\mathbb{C}^{\Omega_n}=V_+\oplus V_-$, via $f=\tfrac12(f+Sf)+\tfrac12(f-Sf)$.
+
+\(ii) $V_+$ and $V_-$ are $P$-invariant.
+
+\(iii) Choose a representative $x$ in each pair $O=\{x,\sigma x\}$. The functions
+$\mathbf 1_x+\mathbf 1_{\sigma x}$ form a basis of $V_+$ and the functions
+$\mathbf 1_x-\mathbf 1_{\sigma x}$ a basis of $V_-$; in particular
+$\dim V_\pm=\binom{2n}{n}/2$.
+
+\(iv) In these bases $P$ acts on $V_\pm$ by the matrices
+
+$$
+P_\pm(O,O')=P(x,y)\pm P(x,\sigma y),
+$$
+
+where $x$ and $y$ are the chosen representatives of $O$ and $O'$. Hence the spectrum
+of $P$ is the union, with multiplicities, of the spectra of $P_+$ and $P_-$.
+
+:::
+
+::: {.proof}
+
+\(i) and (ii) follow from $S^2=I$ and $SP=PS$, and (iii) is immediate. For (iv), if
+$f=\sum_{O'}a_{O'}(\mathbf 1_y\pm\mathbf 1_{\sigma y})$ then
+$(Pf)(x)=\sum_{O'}a_{O'}\bigl(P(x,y)\pm P(x,\sigma y)\bigr)$, and $(Pf)(x)$ is the
+coefficient of $\mathbf 1_x\pm\mathbf 1_{\sigma x}$ in $Pf$.
+
+:::
+
+The matrix $P_+$ is the transition matrix of the *lumped* chain on the pairs
+$\{x,\sigma x\}$, that is, of the chain observed only up to colour swap (for instance,
+by recording at each position whether its letter agrees with the first letter); it is
+a genuine Markov chain because $P$ commutes with $\sigma$. The matrix $P_-$ is the
+signed version and is not stochastic. The constant function lies in $V_+$, so the
+eigenvalue $1$ belongs to $P_+$. @thm-swap below shows that $P_+$ and $P_-$ have
+the same spectrum, except that $1$ belongs to $P_+$ only and $(N-2)/N$ to $P_-$ only.
+
+# Small cases {#sec-small}
+
+## $n=1$
+
+Here $\Omega_1=\{\mathtt{RG},\mathtt{GR}\}$. From either state, removing the first letter leaves a
+single letter, and the two insertions give $\mathtt{RG}$ and $\mathtt{GR}$. So
+$P=\frac12\left(\begin{smallmatrix}1&1\\1&1\end{smallmatrix}\right)$, with eigenvalue
+$1$ (constant eigenvector, in $V_+$) and $0$ (eigenvector $(1,-1)$, in $V_-$). The value
+$(N-1)/N=\tfrac12$ does not occur.
+
+## $n=2$ {#sec-n2}
+
+Number the six states
+
+$$
+1=\mathtt{RRGG},\quad 2=\mathtt{RGRG},\quad 3=\mathtt{RGGR},\quad 4=\mathtt{GRRG},\quad
+5=\mathtt{GRGR},\quad 6=\mathtt{GGRR}.
+$$
+
+Removing the first letter and reinserting it into each of the four slots in turn gives
+
+$$
+4P=\begin{pmatrix}
+2&1&1&0&0&0\\
+0&1&0&2&1&0\\
+0&0&1&0&1&2\\
+2&1&0&1&0&0\\
+0&1&2&0&1&0\\
+0&0&0&1&1&2
+\end{pmatrix}.
+$$
+
+For instance, from $\mathtt{RGRG}$ we are left with $\mathtt{GRG}$, and the insertions give
+$\mathtt{RGRG}$, $\mathtt{GRRG}$, $\mathtt{GRRG}$, $\mathtt{GRGR}$, which is the second row.
+
+The colour swap pairs $1\leftrightarrow 6$, $2\leftrightarrow 5$, $3\leftrightarrow 4$.
+
+*Symmetric part.* Functions in $V_+$ have the form $f=(a,b,c,c,b,a)$, and $4P$
+sends $(a,b,c)$ to $(2a+b+c,\ 2b+2c,\ 2a+b+c)$. So
+
+$$
+4P_+=\begin{pmatrix}2&1&1\\0&2&2\\2&1&1\end{pmatrix}.
+$$
+
+Its trace is $5$; its rows sum to $4$, so $4$ is an eigenvalue; its first and third rows
+are equal, so $0$ is an eigenvalue; and the trace forces the third eigenvalue to be $1$.
+Thus $P_+$ has eigenvalues $1,\tfrac14,0$.
+
+*Antisymmetric part.* Functions in $V_-$ have the form $f=(a,b,c,-c,-b,-a)$, and
+$4P$ sends $(a,b,c)$ to $(2a+b+c,\ -2c,\ -2a-b+c)$. So
+
+$$
+4P_-=\begin{pmatrix}2&1&1\\0&0&-2\\-2&-1&1\end{pmatrix},
+$$
+
+with characteristic polynomial $x(x-1)(x-2)$. Thus $P_-$ has eigenvalues
+$\tfrac12,\tfrac14,0$.
+
+The spectrum of $P$ is therefore $1,\tfrac12,\tfrac14,\tfrac14,0,0$, as
+@thm-main predicts: for $j=0,1,2$ we have $L=2,1,0$, and the words of length $L$
+with at most one copy of each letter are $\mathtt{RG}$ and $\mathtt{GR}$; $\mathtt{R}$ and $\mathtt{G}$; and
+the empty word. The value $\tfrac34$ does not occur. Right eigenvectors (functions on
+the states, listed in the order above) are given in @tbl-n2.
+
+| eigenvalue | eigenvector $f$ | part |
+|:--------:|:-----------------|:----|
+| $1$ | $(1,1,1,1,1,1)$ | $V_+$ |
+| $1/2$ | $(0,1,-1,1,-1,0)$ | $V_-$ |
+| $1/4$ | $(1,-2,1,1,-2,1)$ | $V_+$ |
+| $1/4$ | $(1,-2,1,-1,2,-1)$ | $V_-$ |
+| $0$ | $(0,1,-1,-1,1,0)$ | $V_+$ |
+| $0$ | $(1,-2,0,0,2,-1)$ | $V_-$ |
+
+: Eigenvectors for $n=2$. {#tbl-n2}
+
+## $n=3$
+
+There are $\binom63=20$ states. Each row of $6P$ is obtained by removing the first
+letter and reinserting it into each of the $6$ slots; three sample rows are
+
+| from | to (entry of $6P$) |
+|:----------------|:---------------------------------------|
+| $\mathtt{RRRGGG}$ | $\mathtt{RRRGGG}$ (3), $\mathtt{RRGGGR}$ (1), $\mathtt{RRGGRG}$ (1), $\mathtt{RRGRGG}$ (1) |
+| $\mathtt{RGRGRG}$ | $\mathtt{GRGRGR}$ (1), $\mathtt{GRGRRG}$ (2), $\mathtt{GRRGRG}$ (2), $\mathtt{RGRGRG}$ (1) |
+| $\mathtt{RRGGGR}$ | $\mathtt{RGGGRR}$ (2), $\mathtt{RGGRGR}$ (1), $\mathtt{RGRGGR}$ (1), $\mathtt{RRGGGR}$ (2) |
+
+The eigenvalues of $6P$ are integers. Computing $\dim\ker(6P-jI)$ exactly, by integer
+row reduction, for each $j$ gives the multiplicities below; they add up to $20$, so
+$P$ is diagonalizable with spectrum
+
+$$
+1,\quad \tfrac23,\quad \tfrac12\ (\times2),\quad \tfrac13\ (\times4),\quad
+\tfrac16\ (\times6),\quad 0\ (\times6),
+$$
+
+accounting for all $20$ states. @tbl-n3 compares this with @thm-main.
+
+| eigenvalue | $j$ | $L$ | words counted | multiplicity |
+|:--------:|:-:|:-:|:---------------------------------------|:-----------|
+| $1$ | $6$ | --- | --- | $1$ |
+| $5/6$ | $5$ | --- | (never occurs) | $0$ |
+| $2/3$ | $4$ | $0$ | the empty word | $1$ |
+| $1/2$ | $3$ | $1$ | $\mathtt{R}$, $\mathtt{G}$ | $2$ |
+| $1/3$ | $2$ | $2$ | all $4$ words | $4$ |
+| $1/6$ | $1$ | $3$ | $8$ words minus $\mathtt{RRR}$, $\mathtt{GGG}$ | $6$ |
+| $0$ | $0$ | $4$ | $16$ words minus the $10$ with $\ge3$ copies of a letter | $6$ |
+
+: $n=3$: the eigenvalue $j/6$ and the words of length $L=4-j$ with at most two
+copies of each letter. {#tbl-n3}
+
+The colour swap splits the $20$-dimensional space into two $10$-dimensional parts, and
+the eigenvalues of $6P_\pm$ are
+
+$$
+6P_+:\ 6,3,2,2,1,1,1,0,0,0,\qquad 6P_-:\ 4,3,2,2,1,1,1,0,0,0 .
+$$
+
+The two lists agree except at the top: the symmetric part contains the stationary
+eigenvalue $1$ and the antisymmetric part contains $\tfrac23$, the second largest
+eigenvalue. The same happens for $n=2$, where the parts are $\{1,\tfrac14,0\}$ and
+$\{\tfrac12,\tfrac14,0\}$; @thm-swap proves this pattern for all $n$.
+
+## $n=5$ {#sec-n5}
+
+There are $252$ states. @tbl-n5 lists the multiplicities, both as predicted by
+@eq-main and as found from the matrix.
+
+| eigenvalue | $j$ | $L$ | $\sum_i\binom{L}{i}$ | formula | computed |
+|:--------:|:--:|:-:|:-------------------|:-----:|:------:|
+| $1$ | $10$ | --- | --- | $1$ | $1$ |
+| $9/10$ | $9$ | --- | --- | $0$ | $0$ |
+| $8/10$ | $8$ | $0$ | $\binom00$ | $1$ | $1$ |
+| $7/10$ | $7$ | $1$ | $2^1$ | $2$ | $2$ |
+| $6/10$ | $6$ | $2$ | $2^2$ | $4$ | $4$ |
+| $5/10$ | $5$ | $3$ | $2^3$ | $8$ | $8$ |
+| $4/10$ | $4$ | $4$ | $2^4$ | $16$ | $16$ |
+| $3/10$ | $3$ | $5$ | $5+10+10+5$ | $30$ | $30$ |
+| $2/10$ | $2$ | $6$ | $15+20+15$ | $50$ | $50$ |
+| $1/10$ | $1$ | $7$ | $\binom73+\binom74$ | $70$ | $70$ |
+| $0$ | $0$ | $8$ | $\binom84$ | $70$ | $70$ |
+
+: $n=5$: the formula in @eq-main with $L=8-j$, and the computed
+multiplicities. {#tbl-n5}
+
+The computed column was obtained in four independent ways.
+
+\(i) *Floating-point eigenvalues.* The $252$ eigenvalues of $P$ were computed
+with a standard dense eigensolver. Every value of $10\lambda$ lies within
+$3.2\times10^{-13}$ of an integer, every imaginary part is below
+$2.2\times10^{-14}$, and counting the eigenvalues at each integer gives the formula
+column.
+
+\(ii) *Exact eigenspace dimensions.* Since $10P$ has integer entries, the
+dimensions of the kernels of $10P-jI$ and of $(10P-jI)^2$ can be computed exactly,
+by integer row reduction. For every $j$ the two numbers coincide and equal
+$m_5(j)$, and they add up to $252$. Hence $10P$ is diagonalizable, its only eigenvalues are
+$0,1,\dots,8$ and $10$, and the multiplicities are those of @tbl-n5. This proves
+@thm-main for $n=5$ independently of @sec-proof.
+
+\(iii) *Singular values.* For each $j$, the singular values of $10P-jI$ separate
+cleanly: those counted as zero are at most $4.1\times10^{-15}$, and the next smallest
+is at least $0.139$. The resulting kernel dimensions agree with (ii).
+
+\(iv) *Traces of powers.* In exact integer arithmetic,
+$\operatorname{tr}\bigl((10P)^k\bigr)=\sum_j m_5(j)\,j^k$ for every $0\le k\le 18$. For example the
+common values are $420$, $1402$, $247830$, $11977281982$ and $1021709094257451262$
+for $k=1,2,5,10,18$.
+
+# Equivalent forms of the multiplicities {#sec-forms}
+
+::: {#prp-forms}
+
+Let $0\le j\le N-2$ and $L=N-2-j$. Each of the following equals $m_n(j)$.
+
+\(a) The number of words of length $L$ in $\mathtt{R},\mathtt{G}$ with at most $n-1$ letters
+$\mathtt{R}$ and at most $n-1$ letters $\mathtt{G}$.
+
+\(b) The number of words of length $L$ in which the numbers of $\mathtt{R}$'s and
+$\mathtt{G}$'s differ by at most $j$:
+
+$$
+m_n(j)=\sum_{\lvert 2i-L\rvert\le j}\binom{L}{i}=2^L\,\Pr\bigl(\lvert S_L\rvert\le j\bigr),
+$$
+
+where $S_L$ is the position of a simple $\pm1$ random walk after $L$ steps.
+
+\(c) $2B(L,n-1)-2^L=2\sum_{i=0}^{n-1}\binom Li-2^L$.
+
+\(d) $S(L)$, where $S(0)=1$ and $S(\ell)=2S(\ell-1)-2\binom{\ell-1}{n-1}$ for
+$1\le\ell\le L$.
+
+\(e) $\sum_{r+g=j}D(n-r,n-g)$, with $0\le r,g\le n$ and $D$ as in @eq-dform.
+This also holds for $j=N-1$ and $j=N$, with values $0$ and $1$.
+
+:::
+
+::: {.proof}
+
+\(a) A word with $i$ letters $\mathtt{R}$ has $L-i$ letters $\mathtt{G}$, and the conditions
+$i\le n-1$ and $L-i\le n-1$ say $L-n+1\le i\le n-1$, which is the range of summation
+in @eq-main.
+
+\(b) The two conditions say $2i-L\le 2n-2-L=j$ and $L-2i\le j$.
+
+\(c) By the symmetry $\binom Li=\binom L{L-i}$,
+$\sum_{i\le L-n}\binom Li=\sum_{i\ge n}\binom Li=2^L-B(L,n-1)$, so the sum over
+$L-n+1\le i\le n-1$ equals $B(L,n-1)-\bigl(2^L-B(L,n-1)\bigr)$.
+
+\(d) Let $S(\ell)$ be the number of words of length $\ell$ with at most $n-1$ copies of
+each letter. Extending each such word of length $\ell-1$ by one letter gives
+$2S(\ell-1)$ words of length $\ell$. An extension is invalid exactly when it adds an
+$n$-th copy of a letter, and for each letter there are $\binom{\ell-1}{n-1}$ such
+extensions (the other letter then occurs $\ell-n\le n-1$ times, since
+$\ell\le L\le 2n-2$).
+
+\(e) Let $j\le N-2$. A term with $r=n$ or $g=n$ vanishes, because $D(0,b)=D(a,0)=0$ for
+$a,b\ge1$ and $r=g=n$ would force $j=N$. For $r,g\le n-1$ we have
+$D(n-r,n-g)=\binom{2n-2-j}{n-r-1}=\binom{L}{n-1-r}$. As $r$ runs over
+$\max(0,j-n+1)\le r\le\min(j,n-1)$, the index $i=n-1-r$ runs over
+$\max(0,n-1-j)\le i\le\min(n-1,L)$, and $n-1-j=L-n+1$, so this is the range in
+@eq-main. For $j=N$ only $(r,g)=(n,n)$ occurs, giving $D(0,0)=1$; for $j=N-1$
+the terms are $D(0,1)=D(1,0)=0$.
+
+:::
+
+When $L\le n-1$, that is $j\ge n-1$, no word of length $L$ contains $n$ copies of a
+letter, so $m_n(j)=2^L$; this and other simplifications are discussed in
+@sec-simplify.
+
+# Proof of the main theorem {#sec-proof}
+
+## Symmetric functions
+
+We use the ring $\Lambda$ of symmetric functions with the complete, elementary, power
+sum and Schur functions $h_k$, $e_k$, $p_1=h_1=e_1$ and $s_\lambda$, and the
+convention $h_k=e_k=0$ for $k<0$. Put $H(t)=\sum_{k\ge0}h_kt^k$ and
+$E(t)=\sum_{k\ge0}e_kt^k$, so that $H(t)E(-t)=1$. The Frobenius characteristic $\operatorname{ch}$
+sends a representation of $\mathfrak{S}_N$ to $\Lambda^N$; it satisfies
+$\operatorname{ch}\operatorname{Ind}_{\mathfrak{S}_\mu}^{\mathfrak{S}_N}\mathbf 1=h_\mu$, $\operatorname{ch}(\mathrm{sgn}_N)=e_N$,
+$\operatorname{ch} S^\lambda=s_\lambda$ and
+$\operatorname{ch}\operatorname{Ind}_{\mathfrak{S}_a\times\mathfrak{S}_b}^{\mathfrak{S}_{a+b}}(V\otimes W)=\operatorname{ch} V\cdot\operatorname{ch} W$, and
+$\langle \operatorname{ch} V,\,\operatorname{ch} W\rangle=\dim\operatorname{Hom}_{\mathfrak{S}_N}(V,W)$ for the Hall inner product
+[@Mac95; @Sag01].
+
+For an operator $A$ on a finite-dimensional space $V$ we write
+$V_\lambda(A)=\ker(A-\lambda)^{\dim V}$ for the generalized eigenspace. If a group acts
+on $V$ commuting with $A$, each $V_\lambda(A)$ is a submodule, because the projection
+onto $V_\lambda(A)$ along the other generalized eigenspaces is a polynomial in $A$.
+For the same reason, a short exact sequence $0\to V'\to V\to V''\to0$ of modules with
+compatible operators gives short exact sequences
+$0\to V'_\lambda\to V_\lambda\to V''_\lambda\to0$, so characters of generalized
+eigenspaces add along filtrations.
+
+## Step 1: lumping
+
+An *arrangement* of $N$ distinct cards is a bijection $c\colon[N]\to[N]$ from
+positions to cards; $c(1)$ is the top card. The group $\mathfrak{S}_N$ acts on arrangements by
+relabelling the cards, $c\mapsto g\circ c$, and on functions by
+$(g\cdot f)(c)=f(g^{-1}\circ c)$; as a module, $\mathbb{C}^{\mathfrak{S}_N}$ is the regular
+representation, with characteristic $h_1^N$. The *top-to-random* operator is
+
+$$
+(Tf)(c)=\frac1N\sum_{p=1}^N f(c\circ\pi_p),
+$$
+
+where $c\circ\pi_p$ is the arrangement obtained from $c$ by moving the top card to
+position $p$, with $\pi_p$ as in @eq-pperm. Relabelling acts on the left and
+moves act on the right, so $T$ commutes with relabelling. The *random-to-top*
+operator is $(Rf)(c)=\frac1N\sum_{i=1}^N f(i\cdot c)$, where $i\cdot c$ is obtained from
+$c$ by moving card $i$ to the top. Moving the top card to position $p$ is undone by
+moving the same card back to the top, so $R(c,c')=T(c',c)$, that is $R=T^{\mathsf T}$;
+$R$ also commutes with relabelling.
+
+Colour cards $1,\dots,n$ red and $n+1,\dots,N$ green, by $\kappa\colon[N]\to\{\mathtt{R},\mathtt{G}\}$,
+and put $\varphi(c)=\kappa\circ c\in\Omega_n$, the colour word of $c$. Let
+$\Gamma=\{g\in\mathfrak{S}_N:\kappa\circ g=\kappa\}=\mathfrak{S}_n\times\mathfrak{S}_n$. The fibres of $\varphi$
+are exactly the $\Gamma$-orbits.
+
+::: {#prp-lump}
+
+For every $f\colon\Omega_n\to\mathbb{C}$ we have $T(f\circ\varphi)=(Pf)\circ\varphi$. The map
+$f\mapsto f\circ\varphi$ identifies $\mathbb{C}^{\Omega_n}$ with the space $(\mathbb{C}^{\mathfrak{S}_N})^\Gamma$
+of $\Gamma$-invariant functions and intertwines $P$ with $T$. Consequently, for every
+$\lambda\in\mathbb{C}$ the algebraic multiplicity of $\lambda$ as an eigenvalue of $P$ equals
+$\dim\bigl(V_\lambda(T)\bigr)^\Gamma$, where $V=\mathbb{C}^{\mathfrak{S}_N}$.
+
+:::
+
+::: {.proof}
+
+$(f\circ\varphi)(c\circ\pi_p)=f(\kappa\circ c\circ\pi_p)=f(\varphi(c)\circ\pi_p)$;
+averaging over $p$ and using @eq-pperm gives $(Pf)(\varphi(c))$. A function on
+arrangements is $\Gamma$-invariant exactly when it is constant on the fibres of
+$\varphi$, that is, of the form $f\circ\varphi$. Finally, the projection onto
+$V_\lambda(T)$ is a polynomial in $T$, hence commutes with averaging over $\Gamma$, so
+the generalized $\lambda$-eigenspace of $T$ restricted to $V^\Gamma$ is
+$V_\lambda(T)\cap V^\Gamma=V_\lambda(T)^\Gamma$.
+
+:::
+
+## Injective words and the prefix filtration
+
+::: {#def-injective}
+
+An *injective word* of length $k$ over $[N]$ is a sequence $u=u_1u_2\cdots u_k$ of
+*distinct* elements of $[N]$; equivalently, an injective map $[k]\to[N]$,
+$i\mapsto u_i$. Over the alphabet $[4]$, for example, $3\,1\,4$ is an injective word
+of length $3$ and $3\,1\,3$ is not. There are $N!/(N-k)!$ injective words of length
+$k$; the empty word is the injective word of length $0$, and the injective words of
+length $N$ are the arrangements. (In other terminology, injective words of length $k$
+are $k$-permutations or partial permutations.)
+
+:::
+
+::: {.remark}
+
+With the product "concatenate, then delete every letter that has already
+appeared", for instance $(3\,1)\cdot(1\,4\,2)=3\,1\,4\,2$, injective words form the free
+left-regular band. Its random walk on the chambers (the arrangements) driven by the
+one-letter words is random-to-top; this is how the Tsetlin library enters Brown's
+theory [@Br00].
+
+:::
+
+Let $F_k$ be the space of functions on injective words of length $k$, with $\mathfrak{S}_N$
+acting by relabelling. The stabilizer of a word is the group of permutations fixing
+each of its $k$ letters, so
+
+$$
+F_k\cong\operatorname{Ind}_{\mathfrak{S}_1^k\times\mathfrak{S}_{N-k}}^{\mathfrak{S}_N}\mathbf 1,\qquad \operatorname{ch} F_k=h_1^k\,h_{N-k}.
+$$
+
+Let $U_k\subseteq\mathbb{C}^{\mathfrak{S}_N}$ be the space of functions $f$ such that $f(c)$ depends
+only on the top $k$ cards $(c(1),\dots,c(k))$. The top $k$ cards form an injective word
+of length $k$, and every such word occurs, so $U_k\cong F_k$ via
+$f(c)=\tilde f(c(1)\cdots c(k))$. This gives a filtration by submodules
+
+$$
+U_0\subset U_1\subset\cdots\subset U_{N-1}=U_N=\mathbb{C}^{\mathfrak{S}_N},
+$$
+
+where $U_0$ is the space of constants and $U_{N-1}=U_N$ because the top $N-1$ cards
+determine the arrangement.
+
+::: {#lem-filtration}
+
+Each $U_k$ is invariant under $R$. For $1\le k\le N$ and $f\in U_k$,
+
+$$
+NRf\equiv A_kf\pmod{U_{k-1}},\qquad
+(A_k\tilde f)(u)=\sum_{t=1}^{k-1}\tilde f\bigl(u_t\,u_1\cdots\widehat{u_t}\cdots u_k\bigr),
+$$
+
+that is, $A_k$ moves one of the first $k-1$ letters to the front and leaves the last
+letter $u_k$ in place (the hat denotes omission; $A_1=0$). The operator $A_k$
+preserves the functions on $k$-words that depend only on the first $k-1$ letters, and
+acts on them as unnormalized random-to-top on $(k-1)$-words.
+
+:::
+
+::: {.proof}
+
+Let $u=c(1)\cdots c(k)$. If $i=u_t$ with $t\le k$, the top $k$ cards of $i\cdot c$ are
+$u_t\,u_1\cdots\widehat{u_t}\cdots u_k$; if $i\notin\{u_1,\dots,u_k\}$, they are
+$i\,u_1\cdots u_{k-1}$. Hence
+
+$$
+N(Rf)(c)=\sum_{t=1}^{k}\tilde f\bigl(u_t\,u_1\cdots\widehat{u_t}\cdots u_k\bigr)
++\sum_{i\notin\{u_1,\dots,u_k\}}\tilde f(i\,u_1\cdots u_{k-1}),
+$$ {#eq-nr}
+
+which depends only on $u$; so $Rf\in U_k$. Write the second sum as
+
+$$
+\sum_{i\notin\{u_1,\dots,u_{k-1}\}}\tilde f(i\,u_1\cdots u_{k-1})
+\;-\;\tilde f(u_k\,u_1\cdots u_{k-1}).
+$$
+
+The first term depends only on $u_1\cdots u_{k-1}$ and so lies in $U_{k-1}$; the
+subtracted term cancels the term $t=k$ of the first sum in @eq-nr. This proves
+the congruence. If $\tilde f(u)$ depends only on $u_1\cdots u_{k-1}$, then moving $u_t$
+($t\le k-1$) to the front rearranges the first $k-1$ letters, so $A_k\tilde f$ again
+depends only on them, through unnormalized random-to-top on $(k-1)$-words.
+
+:::
+
+## Step 2: the eigenspaces of the distinct-card shuffle
+
+::: {#thm-equivariant}
+
+For $N\ge0$ and $\ell\in\mathbb{Z}$ let $c_N(\ell)\in\Lambda^N$ be the Frobenius
+characteristic of the generalized eigenspace of $NR$ on $\mathbb{C}^{\mathfrak{S}_N}$ for the
+eigenvalue $\ell$, with $\mathfrak{S}_N$ acting by relabelling. Then
+
+$$
+c_N(\ell)=h_\ell\,\delta_{N-\ell}\quad(0\le\ell\le N),\qquad c_N(\ell)=0\ \text{otherwise},
+$$
+
+where
+
+$$
+\sum_{m\ge0}\delta_mt^m=\frac{E(-t)}{1-h_1t},\qquad\text{that is,}\qquad
+\delta_m=\sum_{i=0}^{m}(-1)^i e_i\,h_1^{m-i}.
+$$
+
+The same holds for $NT$. In particular $NR$ and $NT$ have only the eigenvalues
+$0,1,\dots,N-2$ and $N$, and the eigenvalue $\ell$ has multiplicity
+$\binom N\ell d_{N-\ell}$.
+
+:::
+
+::: {.proof}
+
+*The pieces.* For $1\le k\le N$ let $Q_k=U_k/U_{k-1}$. By @lem-filtration,
+$NR$ induces on $Q_k$ the same operator that $A_k$ induces on $F_k/F_{k-1}$, where
+$F_{k-1}$ is embedded in $F_k$ as the functions of the first $k-1$ letters. So the
+$\ell$-part of $Q_k$ has characteristic equal to that of $(F_k,A_k)$ minus that of
+$(F_{k-1},A_k|_{F_{k-1}})$.
+
+The space $F_k$ is the direct sum, over $k$-subsets $X\subseteq[N]$ and $s\in X$, of
+the functions on injective words with letter set $X$ and last letter $s$. The operator
+$A_k$ preserves each summand and acts on it as unnormalized random-to-top on the
+orderings of $X\setminus\{s\}$. Relabelling permutes the summands transitively, with
+stabilizer $\mathfrak{S}_{X\setminus\{s\}}\times\mathfrak{S}_{\{s\}}\times\mathfrak{S}_{[N]\setminus X}\cong
+\mathfrak{S}_{k-1}\times\mathfrak{S}_1\times\mathfrak{S}_{N-k}$. Hence $(F_k,A_k)$ is induced from
+$(\mathbb{C}^{\mathfrak{S}_{k-1}},(k-1)R)\otimes\mathbf 1\otimes\mathbf 1$, and its $\ell$-part has
+characteristic $c_{k-1}(\ell)\,h_1h_{N-k}$. In the same way,
+$(F_{k-1},A_k|_{F_{k-1}})$ is induced from $\mathfrak{S}_{k-1}\times\mathfrak{S}_{N-k+1}$, and its
+$\ell$-part has characteristic $c_{k-1}(\ell)\,h_{N-k+1}$.
+
+*The recursion.* On $U_0$, the constants, $NR$ acts as $N$. Adding up the pieces
+of the filtration gives, for all $N\ge0$,
+
+$$
+c_N(\ell)=[\ell=N]\,h_N+\sum_{k=1}^{N}\bigl(h_1h_{N-k}-h_{N-k+1}\bigr)\,c_{k-1}(\ell),
+$$ {#eq-rec}
+
+so in particular $c_0(\ell)=[\ell=0]$. (For $k=N$ the coefficient vanishes, matching
+$U_N=U_{N-1}$.)
+
+*Solving.* Let $C_\ell(t)=\sum_{N\ge0}c_N(\ell)t^N$. Multiplying @eq-rec
+by $t^N$ and summing,
+
+$$
+C_\ell=h_\ell t^\ell+t\Bigl(h_1H(t)-\frac{H(t)-1}{t}\Bigr)C_\ell
+=h_\ell t^\ell+\bigl(1-H(t)+t\,h_1H(t)\bigr)C_\ell,
+$$
+
+so $C_\ell\,H(t)(1-h_1t)=h_\ell t^\ell$ and
+$C_\ell=h_\ell t^\ell E(-t)/(1-h_1t)=h_\ell t^\ell\sum_m\delta_mt^m$. Reading off the
+coefficient of $t^N$ gives the formula for $c_N(\ell)$.
+
+*Dimensions.* A representation with characteristic $F\in\Lambda^m$ has dimension
+$\langle F,\,h_1^m\rangle$; since $\dim\operatorname{Ind}_{\mathfrak{S}_i\times\mathfrak{S}_1^{m-i}}(\mathrm{sgn}\otimes\mathbf 1)=m!/i!$,
+we get $\dim\delta_m=\sum_i(-1)^im!/i!=d_m$ and
+$\dim h_\ell\delta_{N-\ell}=\binom N\ell d_{N-\ell}$. Also $\delta_1=h_1-e_1=0$.
+
+*The operator $T$.* $T=R^{\mathsf T}$ is the adjoint of $R$ for the standard inner
+product, which is invariant under relabelling. Hence $V_\ell(NT)$ is the orthogonal
+complement of $\bigoplus_{\ell'\ne\ell}V_{\ell'}(NR)$, which is isomorphic as a module to
+the dual of $V_\ell(NR)$. Characters of $\mathfrak{S}_N$ are real, so the dual has the same
+characteristic.
+
+:::
+
+::: {.remark}
+
+**Relation to Brown's theory.** Brown's theorem for random walks on left-regular bands [@Br00] (and, for
+hyperplane arrangements, [@BHR99; @BD98]) indexes the eigenvalues by the support
+lattice, here the Boolean lattice of subsets $X$ of the cards with $\lambda_X=\lvert X\rvert/N$,
+and gives the multiplicities $m_X=\sum_{Y\supseteq X}\mu(X,Y)\,(N-\lvert Y\rvert)!=d_{N-\lvert X\rvert}$
+through the Möbius function $\mu(X,Y)=(-1)^{\lvert Y\setminus X\rvert}$.
+@thm-equivariant is the $\mathfrak{S}_N$-equivariant version: the factor
+$1/H(t)=E(-t)$ is the Möbius function with the symmetric group acting, which is why
+it appears through the sign characters $e_i$. We used the prefix filtration instead of
+Brown's idempotent construction because it is visibly $\mathfrak{S}_N$-stable; Saliola
+[@Sal12] gives explicit eigenvectors, which would be the starting point for an
+idempotent-based equivariant version. The function $\delta_m$ is the characteristic of
+the derangement representation of $\mathfrak{S}_m$ [@DW93; @RW04], and the module structure in
+@thm-equivariant is, we believe, also recorded in [@UR02; @RSW14]; we have not
+checked the precise statements there.
+
+:::
+
+## Step 3: counting invariants
+
+::: {#lem-frob}
+
+Let $V$ be a representation of $\mathfrak{S}_N$ and $F,F'\in\Lambda$.
+
+\(a) For a composition $\mu$ of $N$, $\dim V^{\mathfrak{S}_\mu}=\langle \operatorname{ch} V,\,h_\mu\rangle$.
+
+\(b) $\langle h_jF,\,F'\rangle=\langle F,\,h_j^\perp F'\rangle$, where $h_j^\perp$ is the adjoint of
+multiplication by $h_j$, and $h_j^\perp h_\mu=\sum_\alpha h_{\mu-\alpha}$, the sum
+over $\alpha\in\mathbb{Z}_{\ge0}^k$ with $\alpha_i\le\mu_i$ and $\lvert \alpha\rvert=j$. In particular
+$h_j^\perp(h_ah_b)=\sum_{r+g=j}h_{a-r}h_{b-g}$.
+
+\(c) $\langle F,\,h_\beta\rangle$ is the coefficient of $x^\beta=x_1^{\beta_1}\cdots x_k^{\beta_k}$
+in $F(x_1,\dots,x_k)$.
+
+:::
+
+::: {.proof}
+
+\(a) is Frobenius reciprocity:
+$\dim V^{\mathfrak{S}_\mu}=\dim\operatorname{Hom}(\operatorname{Ind}_{\mathfrak{S}_\mu}\mathbf 1,V)$. (b) follows from
+the coproduct $\Delta h_j=\sum_rh_r\otimes h_{j-r}$ and $h_r^\perp h_a=h_{a-r}$
+[@Mac95] (Ch. I.5). (c) holds because $\{h_\lambda\}$ and $\{m_\lambda\}$ are dual
+bases.
+
+:::
+
+::: {.proof}
+
+We prove @thm-main. By @prp-lump and @thm-equivariant, the eigenvalues of $P$ lie in
+$\{j/N:0\le j\le N-2\}\cup\{1\}$, and by @lem-frob the algebraic multiplicity of
+$j/N$ is
+
+$$
+\dim V_j(NT)^{\mathfrak{S}_n\times\mathfrak{S}_n}=\langle h_j\delta_{N-j},\,h_nh_n\rangle
+=\sum_{r+g=j}\langle \delta_{N-j},\,h_{n-r}h_{n-g}\rangle .
+$$
+
+Only two variables are needed. In two variables $e_1=x+y$, $e_2=xy$ and $e_i=0$ for
+$i\ge3$, so
+
+$$
+\delta_m(x,y)=(x+y)^m-(x+y)(x+y)^{m-1}+xy\,(x+y)^{m-2}=xy\,(x+y)^{m-2}\qquad(m\ge2),
+$$
+
+while $\delta_1=0$ and $\delta_0=1$. The coefficient of $x^ay^b$ in
+$xy(x+y)^{a+b-2}$ is $\binom{a+b-2}{a-1}$, so $\langle \delta_{a+b},\,h_ah_b\rangle=D(a,b)$ for
+all $a,b\ge0$. Hence the multiplicity of $j/N$ is $\sum_{r+g=j}D(n-r,n-g)$, which is
+$m_n(j)$ by @prp-forms(e).
+
+For diagonalizability we use the theorem of Brown and Diaconis [@BD98] and Brown
+[@Br00] that random walks on left-regular bands, in particular the Tsetlin library
+$R$, are diagonalizable. Then $T=R^{\mathsf T}$ is diagonalizable, and so is its
+restriction $P$ to the invariant subspace $(\mathbb{C}^{\mathfrak{S}_N})^\Gamma$ (@prp-lump).
+
+:::
+
+::: {.remark}
+
+The factor $xy$ in $\delta_m(x,y)=xy(x+y)^{m-2}$ is why $D(a,b)$ counts the words that
+begin with $\mathtt{R}$ and end with $\mathtt{G}$ (see the remark on distinct cards in @sec-intro), and $\delta_1=0$ is why
+$(N-1)/N$ never occurs: a single card cannot be deranged.
+
+:::
+
+## Decks of arbitrary content
+
+::: {#cor-content}
+
+Let $\mu=(\mu_1,\dots,\mu_k)$ be a composition of $N$, and consider the top-to-random
+chain on words with $\mu_i$ letters of colour $i$. It is diagonalizable, its
+eigenvalues lie in $\{j/N:0\le j\le N-2\}\cup\{1\}$, and $j/N$ has multiplicity
+
+$$
+m_\mu(j)=\langle h_j\delta_{N-j},\,h_\mu\rangle
+=\sum_{\substack{\alpha\le\mu\\ \lvert \alpha\rvert=j}}\bigl[x^{\mu-\alpha}\bigr]\,
+\delta_{N-j}(x_1,\dots,x_k),\qquad
+\delta_m(x_1,\dots,x_k)=\sum_{i=0}^{k}(-1)^ie_i\,p_1^{m-i}.
+$$
+
+For two colours, $\mu=(a,b)$ with $a,b\ge1$, and $0\le j\le N-2$, the multiplicity
+$m_{(a,b)}(j)$ is the number of words of length $N-2-j$ with at most $a-1$ letters
+$\mathtt{R}$ and at most $b-1$ letters $\mathtt{G}$.
+
+:::
+
+::: {.proof}
+
+Replace $\Gamma$ by the Young subgroup $\mathfrak{S}_\mu$ in @prp-lump and apply
+@thm-equivariant and @lem-frob; in $k$ variables $e_i=0$ for $i>k$. For two
+colours the computation in the proof of @thm-main gives
+$m_{(a,b)}(j)=\sum_{r+g=j}D(a-r,b-g)$. For $j\le N-2$ only the terms with
+$a-r\ge1$ and $b-g\ge1$ survive, and $D(a-r,b-g)$ is the number of words of length
+$L=N-2-j$ with $a-r-1$ letters $\mathtt{R}$ and $b-g-1$ letters $\mathtt{G}$; summing over $r$
+counts the words with at most $a-1$ letters $\mathtt{R}$ and at most $b-1$ letters $\mathtt{G}$.
+
+:::
+
+@tbl-content compares @cor-content with spectra computed directly from the
+matrices.
+
+| content $\mu$ | states | multiplicities from the top |
+|:------------|:----:|:--------------------------|
+| $(3,2)$ | 10 | 1, 0, 1, 2, 3, 3 |
+| $(4,2)$ | 15 | 1, 0, 1, 2, 3, 4, 4 |
+| $(3,3)$ | 20 | 1, 0, 1, 2, 4, 6, 6 |
+| $(2,2,1)$ | 30 | 1, 0, 3, 6, 10, 10 |
+| $(3,2,1)$ | 60 | 1, 0, 3, 6, 12, 19, 19 |
+| $(2,1,1,1)$ | 60 | 1, 0, 6, 11, 21, 21 |
+
+: Multiplicities of $N/N,(N-1)/N,\dots,0$ for decks of other contents; the
+prediction of @cor-content and the computed spectrum agree in every
+case. {#tbl-content}
+
+# How far the formula simplifies {#sec-simplify}
+
+## Two regimes
+
+::: {#prp-regimes}
+
+Let $0\le j\le N-2$ and $L=N-2-j$.
+
+\(i) If $j\ge n-1$ (equivalently $L\le n-1$), then $m_n(j)=2^L=2^{2n-2-j}$.
+
+\(ii) If $j\le n-2$, then $m_n(j)=2^L-2B(L,n-2-j)$: all words of length $L$ minus two
+tails of $n-1-j$ binomial coefficients each.
+
+\(iii) For all $j$, $m_n(j)\ge 2^L\bigl(1-2e^{-j^2/(4n)}\bigr)$.
+
+:::
+
+::: {.proof}
+
+\(i) A word of length $L\le n-1$ cannot contain $n$ copies of a letter. (ii) By the
+symmetry of binomial coefficients,
+$2B(L,n-1)-2^L=2^L-2\sum_{i\ge n}\binom Li=2^L-2\sum_{i\le L-n}\binom Li$, and
+$L-n=n-2-j$. (iii) If $L=0$ then $m_n(j)=1$ and there is nothing to prove. Otherwise, by
+@prp-forms(b) and Hoeffding's inequality [@Ho63],
+$1-2^{-L}m_n(j)=\Pr(\lvert S_L\rvert\ge j+1)\le 2e^{-(j+1)^2/(2L)}\le2e^{-j^2/(4n)}$, since
+$L<2n$.
+
+:::
+
+So the eigenvalues $(n-1)/N,\dots,(N-2)/N$ have multiplicities $2^{n-1},\dots,2,1$, and
+the cap of $n-1$ copies per letter only matters noticeably when $j$ is of order
+$\sqrt n$ or smaller.
+
+## The lowest few multiplicities
+
+Writing out the sums in @eq-main and using Pascal's rule and symmetry gives, for
+$n\ge2$,
+
+$$
+\begin{aligned}
+m_n(0)&=m_n(1)=\binom{2n-2}{n-1},\\
+m_n(2)&=\binom{2n-2}{n-1}-\binom{2n-4}{n-2}=\frac{3n-5}{n-1}\binom{2n-4}{n-2}
+\end{aligned}
+$$
+
+and, for $n\ge3$,
+
+$$
+\begin{aligned}
+m_n(3)&=2\binom{2n-4}{n-3},\\
+m_n(4)&=\frac{5n^2-25n+32}{(n-1)(n-2)}\binom{2n-6}{n-3}.
+\end{aligned}
+$$
+
+For instance $m_n(1)=\binom{2n-3}{n-2}+\binom{2n-3}{n-1}=\binom{2n-2}{n-1}$, and
+$m_n(3)=\sum_{i=n-4}^{n-1}\binom{2n-5}{i}=\binom{2n-4}{n-3}+\binom{2n-4}{n-1}$. The
+equality $m_n(0)=m_n(1)$ is exact, whereas for distinct cards the corresponding
+multiplicities $d_N$ and $Nd_{N-1}$ differ by $\pm1$.
+
+For each fixed $j$, the sum in @eq-main consists of $j+1$ binomial coefficients
+from the middle of row $L$, all rational multiples of one another, so $m_n(j)$ is a
+binomial coefficient times a rational function of $n$, as in the examples above. The
+rational factor becomes more complicated as $j$ grows (the numerator $5n^2-25n+32$ for
+$j=4$ is already irreducible over $\mathbb{Q}$), and @thm-noclosed shows that no single
+formula of this kind covers all $j$.
+
+## Pascal's rule
+
+::: {#prp-pascal}
+
+For $n\ge1$ and $0\le L\le 2n-2$ put $T(n,L)=m_n(2n-2-L)$, the multiplicity at depth
+$L$ below the top eigenvalue $(N-2)/N$, and put $T(n,L)=0$ for $L>2n-2$. Then
+$T(n,0)=1$, and for $n\ge2$ and $1\le L\le 2n-2$,
+
+$$
+T(n,L)=T(n,L-1)+T(n-1,L-1).
+$$
+
+Equivalently, $m_n(j)=m_n(j+1)+m_{n-1}(j-1)$ for $1\le j\le 2n-3$, and
+$m_n(0)=m_n(1)$.
+
+:::
+
+::: {.proof}
+
+$T(n,L)$ counts the words of length $L$ with at most $n-1$ copies of each letter.
+Deleting the last letter of such a word gives such a word of length $L-1$. Conversely,
+a valid word $u$ of length $L-1\le 2n-3$ cannot contain $n-1$ copies of both letters,
+so it can be extended by at least one letter; it can be extended by both letters
+exactly when it contains at most $n-2$ copies of each, and these words are counted by
+$T(n-1,L-1)$, which is $0$ when $L-1=2n-3$. Hence $T(n,L)=T(n,L-1)+T(n-1,L-1)$.
+
+:::
+
+In @tbl-pascal each entry is its left neighbour plus the entry diagonally above
+and to the left. Each row ends with a repeated entry because the entry above and to
+the left of the last one is $0$; this is the equality $m_n(0)=m_n(1)$.
+
+|  | $L=0$ | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|:----|----:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| $n=1$ | 1 |  |  |  |  |  |  |  |  |  |  |
+| $n=2$ | 1 | 2 | 2 |  |  |  |  |  |  |  |  |
+| $n=3$ | 1 | 2 | 4 | 6 | 6 |  |  |  |  |  |  |
+| $n=4$ | 1 | 2 | 4 | 8 | 14 | 20 | 20 |  |  |  |  |
+| $n=5$ | 1 | 2 | 4 | 8 | 16 | 30 | 50 | 70 | 70 |  |  |
+| $n=6$ | 1 | 2 | 4 | 8 | 16 | 32 | 62 | 112 | 182 | 252 | 252 |
+
+: $T(n,L)=m_n(2n-2-L)$. Column $L$ of row $n$ is the eigenvalue $(2n-2-L)/(2n)$;
+the eigenvalues $1$ (multiplicity $1$) and $(2n-1)/(2n)$ (multiplicity $0$) are not
+shown. {#tbl-pascal}
+
+## A generating function
+
+::: {#prp-gf}
+
+Let $C(t)=\bigl(1-\sqrt{1-4t}\bigr)/(2t)=\sum_{k\ge0}C_kt^k$ be the Catalan generating
+function. Then
+
+$$
+\sum_{n\ge1}t^{n-1}\sum_{j=0}^{2n-2}m_n(j)\,s^j
+=\frac{1+s\,tC(t)}{\bigl(1-s\,tC(t)\bigr)\bigl(1-s^2t\bigr)\sqrt{1-4t}} .
+$$
+
+Adding the contribution of the eigenvalue $1$,
+
+$$
+\sum_{n\ge1}s^{2n}t^{n-1}=\frac{s^2}{1-s^2t},
+$$
+
+gives the generating function $\sum_{n\ge1}t^{n-1}\sum_\lambda s^{N\lambda}$ of the
+complete spectra, the inner sum running over the eigenvalues with multiplicity. At
+$s=0$ the right-hand side is
+
+$$
+\frac{1}{\sqrt{1-4t}}=\sum_{n\ge1}\binom{2n-2}{n-1}t^{n-1},
+$$
+
+the multiplicities of the eigenvalue $0$; and with the eigenvalue $1$ included, $s=1$
+gives $\sum_{n\ge1}\binom{2n}{n}t^{n-1}$, the numbers of states, as it must.
+
+:::
+
+::: {.proof}
+
+A word with $a$ letters $\mathtt{R}$ and $b$ letters $\mathtt{G}$ is counted in $m_n(j)$ exactly when
+$n-1\ge\max(a,b)$ and $j=2(n-1)-a-b$. Writing $q=n-1$, the left-hand side is therefore
+
+$$
+\sum_{a,b\ge0}\binom{a+b}{a}\sum_{q\ge\max(a,b)}s^{2q-a-b}t^q
+=\frac{1}{1-s^2t}\sum_{a,b\ge0}\binom{a+b}{a}s^{\lvert a-b\rvert}t^{\max(a,b)} .
+$$
+
+The terms with $a=b=q$ give $\sum_q\binom{2q}{q}t^q=1/\sqrt{1-4t}$. The terms with
+$\lvert a-b\rvert=d\ge1$ and $\min(a,b)=q$ come in two orientations and give, by the identity
+$\sum_{q\ge0}\binom{2q+d}{q}t^q=C(t)^d/\sqrt{1-4t}$,
+
+$$
+2\sum_{d\ge1}(st)^d\frac{C(t)^d}{\sqrt{1-4t}}
+=\frac{2\,stC(t)}{\bigl(1-stC(t)\bigr)\sqrt{1-4t}} .
+$$
+
+Adding the two contributions gives the formula. The value at $s=1$ follows from
+$\bigl(1-tC(t)\bigr)C(t)=1$ and $\sqrt{1-4t}=1-2tC(t)$.
+
+:::
+
+## No closed form in the lower half
+
+::: {#def-hypergeo}
+
+Let $d\in\{1,2\}$. A function $h$ on a set $\mathcal D\subseteq\mathbb{Z}^2$ is a
+*hypergeometric term* (with step $d$ in the second variable) if there are rational
+functions $R_1,R_2\in\mathbb{Q}(x,y)$ such that $h(n+1,j)=R_1(n,j)\,h(n,j)$ and
+$h(n,j+d)=R_2(n,j)\,h(n,j)$ whenever both points lie in $\mathcal D$.
+
+:::
+
+Products and quotients of factorials of integer-linear forms in $n$ and $j$, multiplied
+by rational functions and powers, are hypergeometric terms; this is the usual meaning
+of a closed form for a single term [@PWZ96]. Step $d=2$ allows separate formulas for
+even and odd $j$.
+
+::: {#thm-noclosed}
+
+Let $\mathcal D=\{(n,j)\in\mathbb{Z}^2:n\ge2,\ 0\le j\le n-2\}$, the lower half of the
+spectrum, and for $\varepsilon\in\{0,1\}$ let
+$\mathcal D_\varepsilon=\{(n,j)\in\mathcal D:j\equiv\varepsilon\pmod 2\}$. There is no
+hypergeometric term with step $2$ on $\mathcal D_\varepsilon$ that agrees with
+$m_n(j)$ there. In particular, no hypergeometric term in $(n,j)$ agrees with $m_n(j)$
+on $\mathcal D$, even if separate formulas are allowed for even and odd $j$.
+
+:::
+
+::: {.proof}
+
+Change variables to $p=n-1$ and $L=2n-2-j$, so that $j=2p-L$ and $j\equiv L\pmod2$. The
+set $\mathcal D_\varepsilon$ becomes
+$\{(p,L):p\ge1,\ p+1\le L\le 2p,\ L\equiv\varepsilon\}$, and by
+@prp-forms(c) the multiplicity becomes
+
+$$
+M(p,L)=2B(L,p)-2^L,\qquad\text{so}\qquad M(p+1,L)-M(p,L)=2\binom{L}{p+1}.
+$$
+
+Suppose $h=M$ on $\mathcal D_\varepsilon$ for a hypergeometric term $h$ with step $2$.
+The shift $(p,L)\mapsto(p+1,L)$ is $(n,j)\mapsto(n+1,j+2)$, so on
+$W=\{(p,L):p+2\le L\le 2p,\ L\equiv\varepsilon\}$, where both points lie in the domain,
+$h(p+1,L)=\rho(p,L)\,h(p,L)$ with $\rho=R_1(n,j)R_2(n+1,j)$ rational. On $W$ we have
+$h(p,L)\bigl(\rho(p,L)-1\bigr)=2\binom{L}{p+1}>0$, so
+
+$$
+h(p,L)=2\,y(p,L)\binom{L}{p+1},\qquad y=\frac{1}{\rho-1}\in\mathbb{Q}(p,L).
+$$
+
+Let $W'=\{(p,L):p+3\le L\le 2p,\ L\equiv\varepsilon\}$, on which $(p,L)$ and $(p+1,L)$
+both lie in $W$. Substituting into $M(p+1,L)-M(p,L)=2\binom{L}{p+1}$ and dividing by
+$2\binom{L}{p+1}\ne0$ gives, on $W'$,
+
+$$
+(L-p-1)\,y(p+1,L)-(p+2)\,y(p,L)=p+2 .
+$$ {#eq-gosper}
+
+Clearing denominators turns @eq-gosper into $\Phi(p,L)=0$ for a polynomial
+$\Phi$, valid at the points of $W'$ off the zero set of some nonzero polynomial $\Psi$.
+Then $\Phi\Psi$ vanishes on $W'$. For each large $p$ the set $W'$ contains about $p/2$
+values of $L$, more than the degree of $\Phi\Psi$ in $L$, so every coefficient of
+$\Phi\Psi$ as a polynomial in $L$ vanishes at every large $p$, and is therefore zero.
+Hence $\Phi\Psi=0$, so $\Phi=0$ and @eq-gosper is an identity in $\mathbb{Q}(p,L)$. Now regard $L$
+as transcendental over $\mathbb{Q}$ and $y$ as an element of $K(p)$, $K=\mathbb{Q}(L)$, and let
+$\overline K$ be an algebraic closure of $K$.
+
+*$y$ has no poles in $\overline K$.* Suppose $y$ has a pole $\alpha$. The poles in
+$\alpha+\mathbb{Z}$ form a finite nonempty set; let $\alpha_+$ be its largest element and
+$\alpha_-$ its smallest. At $p=\alpha_+$ the function $y(p+1)$ is regular, as is the
+right-hand side of @eq-gosper, so $(p+2)y(p)$ must be regular at $\alpha_+$,
+which forces $\alpha_+=-2$. At $p=\alpha_--1$ the function $y(p)$ is regular, so
+$(L-p-1)y(p+1)$ must be regular there, which forces $L-\alpha_-=0$. Then
+$\alpha_+-\alpha_-=-2-L\in\mathbb{Z}$, impossible since $L$ is transcendental.
+
+*$y$ is not a polynomial either.* If $y\ne0$ is a polynomial of degree $e$ with
+leading coefficient $c$, the left-hand side of @eq-gosper has leading term
+$-c\,p^{e+1}-c\,p^{e+1}=-2c\,p^{e+1}$, so $e=0$ and $y=c$ is constant; then
+$c(L-2p-3)=p+2$ forces $c=-\tfrac12$ and $L=-1$, a contradiction. And $y=0$ gives
+$0=p+2$.
+
+This contradiction proves the first statement. For the second, the restriction of a
+hypergeometric term with step $1$ on $\mathcal D$ to $\mathcal D_\varepsilon$ is a
+hypergeometric term with step $2$.
+
+:::
+
+::: {.remark}
+
+The argument is Gosper's algorithm [@Go78], [@PWZ96] (Ch. 5) applied to the
+partial row sums $B(L,p)=\sum_{i\le p}\binom Li$ of Pascal's triangle, the standard
+example of a sum with no closed form (in contrast with the alternating sums
+$\sum_{i\le p}(-1)^i\binom Li=(-1)^p\binom{L-1}{p}$). So the description of the
+multiplicities is genuinely piecewise: $2^{2n-2-j}$ in the upper half
+$j\ge n-1$, and in the lower half a partial row sum, for which the recurrence of
+@prp-pascal and the generating function of @prp-gf are the simplest exact
+descriptions.
+
+:::
+
+# The spectrum on each Specht module {#sec-specht}
+
+## The chain in the group algebra
+
+Let $\mathfrak{S}_N$ act on words of any content by permuting positions, and on functions by
+$(\rho(\tau)f)(w)=f(w\circ\tau)$. By @eq-pperm,
+
+$$
+P=\frac1N\sum_{p=1}^N\rho(\pi_p),
+$$
+
+the image of an element of the group algebra $\mathbb{C}\mathfrak{S}_N$. Hence $P$ preserves every
+$\mathfrak{S}_N$-stable subspace, and the multiplicity of an eigenvalue of $P$ on an
+irreducible submodule depends only on its isomorphism type. For $a\ge b$ write
+$M^{(a,b)}$ for the functions on words with $a$ letters $\mathtt{R}$ and $b$ letters $\mathtt{G}$;
+the same element of $\mathbb{C}\mathfrak{S}_N$ acts on $M^{(a,b)}$ as the chain for that deck. By
+Young's rule [@Sag01],
+
+$$
+M^{(a,b)}\cong\bigoplus_{i=0}^{b}S^{(a+b-i,i)},\qquad
+\dim S^{(N-i,i)}=\binom Ni-\binom N{i-1},
+$$
+
+each Specht module occurring once. In particular
+$\mathbb{C}^{\Omega_n}=M^{(n,n)}\cong S^{(2n)}\oplus S^{(2n-1,1)}\oplus\cdots\oplus S^{(n,n)}$, the
+top piece $S^{(n,n)}$ has dimension $C_n$, and
+$M^{(2n-i,i)}\cong M^{(2n-i+1,i-1)}\oplus S^{(2n-i,i)}$.
+
+## Multiplicities on the pieces
+
+::: {#prp-pieces}
+
+Let $1\le i\le n$. On $S^{(2n-i,i)}$ the eigenvalue $j/N$ has multiplicity
+
+$$
+\binom{L}{i-1}-\binom{L}{2n-i}\quad(0\le j\le N-2,\ L=N-2-j),
+$$
+
+and multiplicity $0$ for $j\in\{N-1,N\}$. The trivial module $S^{(2n)}$ carries only
+the eigenvalue $1$.
+
+:::
+
+::: {.proof}
+
+By the last isomorphism above, the multiplicity on $S^{(2n-i,i)}$ is
+$m_{(2n-i,i)}(j)-m_{(2n-i+1,i-1)}(j)$, the difference of the multiplicities for two
+decks. For $j=N$ both are $1$ and for $j=N-1$ both are $0$. Let $j\le N-2$. For $i\ge2$
+both decks have two colours, and by @cor-content the two numbers count the words
+of length $L$ with at most $2n-i-1$ letters $\mathtt{R}$ and at most $i-1$ letters $\mathtt{G}$, and
+with at most $2n-i$ letters $\mathtt{R}$ and at most $i-2$ letters $\mathtt{G}$. Counting by the
+number $g$ of letters $\mathtt{G}$, the first count runs over
+$\max(0,L-2n+i+1)\le g\le i-1$ and the second over $\max(0,L-2n+i)\le g\le i-2$, so the
+difference is $\binom L{i-1}-\binom L{L-2n+i}=\binom L{i-1}-\binom L{2n-i}$. For $i=1$
+the second deck is the single word $\mathtt{R}^{2n}$, with only the eigenvalue $1$, and the
+first count is $1=\binom L0-\binom L{2n-1}$. Finally $M^{(2n,0)}=S^{(2n)}$ is the trivial
+module.
+
+:::
+
+::: {#cor-pieces}
+
+Let $0\le j\le N-2$ and $L=N-2-j$.
+
+\(a) $\sum_{i=1}^n\bigl[\binom L{i-1}-\binom L{2n-i}\bigr]=B(L,n-1)-\bigl(2^L-B(L,n-1)\bigr)
+=m_n(j)$, in agreement with @thm-main.
+
+\(b) The standard representation $S^{(N-1,1)}$ carries each of the eigenvalues
+$0,1/N,\dots,(N-2)/N$ exactly once.
+
+\(c) On $S^{(n,n)}$ the eigenvalue $j/N$ has multiplicity
+
+$$
+\binom{L}{n-1}-\binom{L}{n}=f^{(n-1,\,n-1-j)}\quad(0\le j\le n-1),
+$$
+
+and multiplicity $0$ for $j\ge n$. Here $f^{\lambda}$ is the number of standard
+Young tableaux of shape $\lambda$.
+
+:::
+
+::: {.proof}
+
+\(a) uses $L\le 2n-2$, so that $\sum_{s=n}^{2n-1}\binom Ls=2^L-B(L,n-1)$. (b) is
+the case $i=1$. (c) is the case $i=n$, together with the hook length formula
+$f^{(a,b)}=\binom{a+b}{b}-\binom{a+b}{b-1}$ for $a=n-1$, $b=n-1-j$, $a+b=L$, and the
+symmetry of binomial coefficients. For $j\ge n$ we have $L\le n-2$, so both binomial
+coefficients vanish.
+
+:::
+
+|  | $j=0$ | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | dim |
+|:-----------|----:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| $S^{(10,0)}$ | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 |
+| $S^{(9,1)}$ | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 9 |
+| $S^{(8,2)}$ | 7 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 | 0 | 0 | 35 |
+| $S^{(7,3)}$ | 20 | 20 | 15 | 10 | 6 | 3 | 1 | 0 | 0 | 0 | 0 | 75 |
+| $S^{(6,4)}$ | 28 | 28 | 19 | 10 | 4 | 1 | 0 | 0 | 0 | 0 | 0 | 90 |
+| $S^{(5,5)}$ | 14 | 14 | 9 | 4 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 42 |
+| total | 70 | 70 | 50 | 30 | 16 | 8 | 4 | 2 | 1 | 0 | 1 | 252 |
+
+: $n=5$: multiplicity of $j/10$ on each Specht module $S^{(10-i,i)}$. The last
+row is the total, $m_5(j)$, and the last column the dimension. {#tbl-pieces}
+
+## An explicit description of the pieces
+
+Identify a word $w\in\Omega_n$ with the set $G(w)\subseteq[N]$ of positions of its letters
+$\mathtt{G}$, an $n$-subset. For $0\le i\le n$ let $U_i$ send a function $\phi$ on the
+$i$-subsets of $[N]$ to $(U_i\phi)(w)=\sum_{T\subseteq G(w),\,\lvert T\rvert=i}\phi(T)$. Each
+$U_i$ is $\mathfrak{S}_N$-equivariant and injective (the inclusion matrices have full rank
+[@Got66]), so $\operatorname{Im}U_i\cong M^{(N-i,i)}\cong\bigoplus_{i'\le i}S^{(N-i',i')}$,
+and the $S^{(N-i,i)}$-component of $\mathbb{C}^{\Omega_n}$ is the orthogonal complement of
+$\operatorname{Im}U_{i-1}$ in $\operatorname{Im}U_i$ (the standard inner product is
+invariant, and distinct isotypic components are orthogonal). For $n\le6$ we computed
+these components, checked that $P$ preserves each of them, and computed the spectrum
+of $P$ on each; all agree with @prp-pieces.
+
+## The colour swap
+
+::: {#lem-kneser}
+
+Under the identification $w\mapsto G(w)$, the colour swap $\sigma$ sends an $n$-subset
+of positions to its complement. Thus $S$ is the adjacency operator of the Kneser graph
+$KG(2n,n)$, whose vertices are the $n$-subsets of $[2n]$, two being adjacent when they
+are disjoint. It commutes with $\mathfrak{S}_N$ and acts on the component $S^{(2n-i,i)}$ as the
+scalar $(-1)^i$.
+
+:::
+
+::: {.proof}
+
+Each $n$-subset of $[2n]$ is disjoint from exactly one other, its complement. The map
+commutes with permutations of positions, so by Schur's lemma it acts on each
+(multiplicity-free) component by a scalar. The Kneser graph $KG(N,n)$ has eigenvalue
+$(-1)^i\binom{N-n-i}{n-i}$ on the $S^{(N-i,i)}$-component [@Lo79; @GR01], and for
+$N=2n$ this is $(-1)^i$.
+
+:::
+
+::: {#thm-swap}
+
+The colour-symmetric and colour-antisymmetric parts of @sec-swap are
+
+$$
+V_+=\bigoplus_{i\ \mathrm{even}}S^{(2n-i,i)},\qquad
+V_-=\bigoplus_{i\ \mathrm{odd}}S^{(2n-i,i)}.
+$$
+
+For $0\le j\le N-3$ the eigenvalue $j/N$ has the same multiplicity, $m_n(j)/2$, in
+$V_+$ and in $V_-$. The eigenvalue $(N-2)/N$ occurs only in $V_-$ (once), and the
+eigenvalue $1$ only in $V_+$ (once). In particular $m_n(j)$ is even for
+$0\le j\le 2n-3$.
+
+:::
+
+::: {.proof}
+
+The description of $V_\pm$ is @lem-kneser. Let $j\le N-2$. The trivial module
+carries only the eigenvalue $1$, so by @prp-pieces the multiplicity of $j/N$ in
+$V_+$ minus that in $V_-$ is
+
+$$
+\Delta=\sum_{i=1}^{n}(-1)^i\Bigl[\binom{L}{i-1}-\binom{L}{2n-i}\Bigr].
+$$
+
+If $L=0$, that is $j=N-2$, only $i=1$ contributes (as $2n-i\ge n\ge1$), so $(N-2)/N$
+lies in $V_-$ with multiplicity $1$. If $L\ge1$, use
+$\sum_{r=0}^{q}(-1)^r\binom Lr=(-1)^q\binom{L-1}{q}$ and $\sum_{r=0}^{L}(-1)^r\binom Lr=0$:
+
+$$
+\begin{aligned}
+\sum_{i=1}^n(-1)^i\binom L{i-1}&=-(-1)^{n-1}\binom{L-1}{n-1},\\
+\sum_{i=1}^n(-1)^i\binom L{2n-i}&=\sum_{s=n}^{2n-1}(-1)^s\binom Ls
+=-(-1)^{n-1}\binom{L-1}{n-1},
+\end{aligned}
+$$
+
+where the second computation uses $L\le 2n-2$. Hence $\Delta=0$. The eigenvalue $1$
+lies in the trivial module, which is in $V_+$.
+
+:::
+
+For example, for $n=5$, @tbl-pieces gives the following multiplicities of $j/10$
+for $j=0,1,\dots,8$:
+
+$$
+V_+:\ 35,\,35,\,25,\,15,\,8,\,4,\,2,\,1,\,0,\qquad
+V_-:\ 35,\,35,\,25,\,15,\,8,\,4,\,2,\,1,\,1.
+$$
+
+For $n=2$ and $n=3$ the theorem reproduces the splittings found in @sec-small.
+
+# A proposed formula {#sec-proposed}
+
+It has been suggested that the multiplicity of the eigenvalue $j/(2n)$ is
+
+$$
+s_n(j)=\binom{2n-j-1}{n-1}-\binom{2n-j-1}{n},
+$$ {#eq-proposed}
+
+first for all $j$, and in a revised form only for $1\le j\le 2n-2$. (In the original
+proposal the eigenvalue numerator was called $k$.)
+
+::: {#prp-proposed}
+
+Let $s_n(j)$ be as in @eq-proposed.
+
+\(a) $s_n(0)=0$, $s_n(j)=f^{(n-1,\,n-j)}$ for $1\le j\le n$, and $s_n(j)=0$ for
+$n<j\le 2n-1$. The values are ballot numbers, and
+$\sum_{j=0}^{2n-1}s_n(j)=C_n$.
+
+\(b) For $1\le j\le 2n-1$, $s_n(j)$ is the multiplicity of the eigenvalue
+$(j-1)/(2n)$, one step *below* $j/(2n)$, on the Specht module $S^{(n,n)}$.
+
+\(c) As a formula for all $j$, @eq-proposed fails for every $n\ge1$, since
+$s_n(0)=0<m_n(0)$.
+
+\(d) For $1\le j\le 2n-2$ we have $s_n(j)\le m_n(j)$, with equality only for
+$(n,j)=(2,2)$. So the revised claim also fails for every $n\ge2$ (for $n=1$ its range is
+empty).
+
+:::
+
+::: {.proof}
+
+\(b) By @cor-pieces(c), the multiplicity of $(j-1)/N$ on $S^{(n,n)}$ is
+$\binom{L'}{n-1}-\binom{L'}{n}$ with $L'=2n-2-(j-1)=2n-j-1$, which is $s_n(j)$, for
+$0\le j-1\le N-2$.
+
+\(a) The hook length formula gives $f^{(n-1,n-j)}=\binom{2n-j-1}{n-j}-\binom{2n-j-1}{n-j-1}$,
+which equals $s_n(j)$ by symmetry, for $1\le j\le n$. For $j>n$ the top index
+$2n-j-1$ is less than $n-1$, so $s_n(j)=0$; and
+$s_n(0)=\binom{2n-1}{n-1}-\binom{2n-1}{n}=0$. By (b) the sum is
+$\dim S^{(n,n)}=C_n$.
+
+\(c) $m_n(0)=\binom{2n-2}{n-1}\ge1$. For $n=1$, for example, $P$ has eigenvalues $1$ and
+$0$, while @eq-proposed assigns multiplicity $0$ to the eigenvalue $0$ and
+multiplicity $1$ to $\tfrac12$.
+
+\(d) Compare with $m_n(j)$, using @prp-regimes and $L=2n-2-j$.
+
+- $1\le j\le n-2$: here $m_n(j)$ is a sum of consecutive binomial coefficients
+  $\binom Li$ including $i=n-1$ and $i=n-2$, so
+  $m_n(j)\ge\binom{L}{n-1}+\binom{L}{n-2}=\binom{2n-j-1}{n-1}$, while
+  $s_n(j)=\binom{2n-j-1}{n-1}-\binom{2n-j-1}{n}$ and $\binom{2n-j-1}{n}\ge1$.
+- $j=n-1$: $s_n(j)=\binom n{n-1}-1=n-1<2^{n-1}=m_n(j)$.
+- $j=n$: $s_n(j)=1\le 2^{n-2}=m_n(j)$, with equality only for $n=2$.
+- $n+1\le j\le 2n-2$: $s_n(j)=0<2^{2n-2-j}=m_n(j)$. 
+
+:::
+
+The smallest counterexample to the revised claim is $n=2$, $j=1$:
+@eq-proposed gives $\binom21-\binom22=1$, but the eigenvalue $\tfrac14$ has the two
+independent eigenvectors $(1,-2,1,1,-2,1)$ and $(1,-2,1,-1,2,-1)$ of @tbl-n2. In
+general, at $j=1$ the proposed value is the Catalan number $C_{n-1}$ while the true
+multiplicity is $\binom{2n-2}{n-1}$. @tbl-proposed5 and @tbl-proposed6 show $n=5$ and
+$n=6$.
+
+| $j$ | $s_5(j)$ | $m_5(j)$ | on $S^{(5,5)}$ |
+|----:|-------:|-------:|-------------:|
+| 0 | 0 | 70 | 14 |
+| 1 | 14 | 70 | 14 |
+| 2 | 14 | 50 | 9 |
+| 3 | 9 | 30 | 4 |
+| 4 | 4 | 16 | 1 |
+| 5 | 1 | 8 | 0 |
+| 6 | 0 | 4 | 0 |
+| 7 | 0 | 2 | 0 |
+| 8 | 0 | 1 | 0 |
+| 9 | 0 | 0 | 0 |
+| 10 | --- | 1 | 0 |
+| total | 42 | 252 | 42 |
+
+: $n=5$: the proposed values from @eq-proposed, the true multiplicities, and
+the multiplicities on $S^{(5,5)}$. At $j=10$ the top index in @eq-proposed is
+$-1$. {#tbl-proposed5}
+
+| $j$ | $\binom{11-j}{5}$ | $\binom{11-j}{6}$ | $s_6(j)$ | $m_6(j)$ |
+|----:|----------------:|----------------:|-------:|-------:|
+| 1 | 252 | 210 | 42 | 252 |
+| 2 | 126 | 84 | 42 | 182 |
+| 3 | 56 | 28 | 28 | 112 |
+| 4 | 21 | 7 | 14 | 62 |
+| 5 | 6 | 1 | 5 | 32 |
+| 6 | 1 | 0 | 1 | 16 |
+| 7 | 0 | 0 | 0 | 8 |
+| 8 | 0 | 0 | 0 | 4 |
+| 9 | 0 | 0 | 0 | 2 |
+| 10 | 0 | 0 | 0 | 1 |
+| total |  |  | 132 |  |
+
+: $n=6$, $1\le j\le 10$: the proposed values
+$s_6(j)=\binom{11-j}{5}-\binom{11-j}{6}$ and the true multiplicities of $j/12$.
+The proposed values add up to $C_6=132$. {#tbl-proposed6}
+
+# Computational verification {#sec-verification}
+
+The script in [Appendix A](#app-code) (Python with NumPy; about a minute) checks the following;
+every check passes.
+
+**A.** The spectrum of $P$ for $n=1,\dots,6$ (up to $924$ states) agrees with
+@thm-main.
+
+**B.** The spectra for the contents of @tbl-content agree with
+@cor-content, including the two-colour word count.
+
+**C.** For $n=3$ and $n=5$: $\dim\ker(NP-jI)=\dim\ker(NP-jI)^2=m_n(j)$ for every $j$, in
+exact integer arithmetic, and these add up to the number of states, so $P$ is
+diagonalizable; for $n=5$ the singular values of $10P-jI$ also separate cleanly.
+
+**D.** For $n=5$: $\operatorname{tr}\bigl((10P)^k\bigr)=\sum_jm_5(j)j^k$ exactly for $0\le k\le18$.
+
+**E.** The matrix $4P$, the eigenvectors of @tbl-n2 and the $3\times3$ blocks for
+$n=2$, and the sample rows for $n=3$.
+
+**F.** For $n\le6$: the Specht components of @sec-specht are $P$-invariant, have the
+right dimensions and the spectra of @prp-pieces; the colour swap acts on them
+by $(-1)^i$; and the spectra of $P_\pm$ agree as in @thm-swap.
+
+**G.** For $n\le30$: @prp-forms, @prp-regimes(i),(ii), the formulas for
+$m_n(0),\dots,m_n(4)$, @prp-pascal, @cor-pieces(a), the evenness in
+@thm-swap, and the agreement of @eq-main with
+$\langle h_j\delta_{N-j},\,h_nh_n\rangle$ for $n\le8$; and @prp-gf for $n\le23$.
+
+**H.** @prp-proposed: for $n\le80$ the only agreement of @eq-proposed with
+$m_n(j)$ for $1\le j\le 2n-2$ is $(n,j)=(2,2)$, and $s_n(j)\le m_n(j)$ throughout; for
+$n\le30$, $\sum_js_n(j)=C_n$ and $s_n(j)$ equals the $S^{(n,n)}$-multiplicity of
+$(j-1)/N$.
+
+# References {.unnumbered}
+
+::: {#refs}
+:::
+
+*Note on the references.* The bibliographic details above were compiled
+from memory and should be checked (for instance against MathSciNet) before they are
+cited. No step of the proofs depends on them except the diagonalizability theorem of
+[@BD98; @Br00], which is used only for the word "diagonalizable" in
+@thm-main and @cor-content; for $n=3$ and $n=5$ diagonalizability was also verified
+directly.
+
+# Appendix A. Verification code {#app-code .unnumbered}
+
+The following script carries out the checks listed in @sec-verification. It needs
+only Python 3 and NumPy, and runs in about a minute. (It is shown, not run, when
+this document is rendered; to execute it during rendering, change `#| eval: false`
+to `#| eval: true` in the cell options.)
+
+```{python}
+#| label: code-verify
+#| eval: false
+#| code-fold: true
+#| code-summary: "Show the verification script"
+#!/usr/bin/env python3
+"""Checks for the note on the top-to-random chain on two-coloured words.
+
+A  spectra for n = 1..6 against the multiplicity formula
+B  spectra of other multiset decks against the general-content formula
+C  exact eigenspace dimensions for n = 3 and 5 (integer row reduction)
+D  traces of powers of 10P for n = 5, k = 0..18, in exact integer arithmetic
+E  n = 2 eigenvectors and n = 3 sample rows quoted in the text
+F  Specht pieces S^(2n-i,i) and the colour swap, n = 1..6
+G  equivalent forms, Pascal's rule, small-j formulas (n <= 30),
+   generating function (n <= 23)
+H  the suggested formula C(2n-k-1, n-1) - C(2n-k-1, n)
+Needs only numpy.  Takes about a minute, mostly for C and F.
+"""
+import itertools
+from collections import Counter, defaultdict
+from math import comb, gcd
+import numpy as np
+
+R, G = 0, 1
+
+
+# ---------------------------------------------------------------- the chain
+def chain(content):
+    """States (tuples of colour indices) and the integer matrix N*P."""
+    N = sum(content)
+    base = [c for c, mult in enumerate(content) for _ in range(mult)]
+    W = sorted(set(itertools.permutations(base)))
+    ix = {w: a for a, w in enumerate(W)}
+    M = np.zeros((len(W), len(W)), dtype=np.int64)
+    for w in W:
+        first, rest = w[0], w[1:]
+        for s in range(N):                      # the N slots
+            M[ix[w], ix[rest[:s] + (first,) + rest[s:]]] += 1
+    return W, ix, M
+
+
+def spectrum(M):
+    """Eigenvalues of the integer matrix M (= N*P), rounded and counted."""
+    ev = np.linalg.eigvals(M.astype(float))
+    near = np.rint(ev.real).astype(int)
+    assert np.abs(ev - near).max() < 1e-6
+    return Counter(near.tolist()), np.abs(ev - near).max(), np.abs(ev.imag).max()
+
+
+# ------------------------------------------------------------- the formulas
+def m(n, j):
+    """Multiplicity of j/(2n) for the chain on words with n R's and n G's."""
+    N = 2 * n
+    if j == N:
+        return 1
+    if j == N - 1:
+        return 0
+    L = N - 2 - j
+    return sum(comb(L, i) for i in range(max(0, L - n + 1), min(L, n - 1) + 1))
+
+
+def polymul(p, q):
+    out = defaultdict(int)
+    for a, x in p.items():
+        for b, y in q.items():
+            out[tuple(u + v for u, v in zip(a, b))] += x * y
+    return out
+
+
+def delta(deg, k):
+    """delta_deg = sum_i (-1)^i e_i p_1^(deg-i) in k variables."""
+    p1 = {tuple(int(t == i) for t in range(k)): 1 for i in range(k)}
+    tot = defaultdict(int)
+    for i in range(min(deg, k) + 1):
+        e = {tuple(int(t in S) for t in range(k)): 1
+             for S in itertools.combinations(range(k), i)}
+        p = {(0,) * k: 1}
+        for _ in range(deg - i):
+            p = polymul(p, p1)
+        for ex, c in polymul(e, p).items():
+            tot[ex] += (-1) ** i * c
+    return tot
+
+
+def m_content(mu, j):
+    """<h_j delta_{N-j}, h_mu>: multiplicity of j/N for a deck of content mu."""
+    k, N = len(mu), sum(mu)
+    d = delta(N - j, k)
+    return sum(d.get(tuple(c - a for c, a in zip(mu, al)), 0)
+               for al in itertools.product(*[range(c + 1) for c in mu])
+               if sum(al) == j)
+
+
+def piece(n, i, k):
+    """Multiplicity of k/(2n) on the Specht module S^(2n-i,i)."""
+    N = 2 * n
+    if i == 0:
+        return int(k == N)
+    if k >= N - 1:
+        return 0
+    L = N - 2 - k
+    return comb(L, i - 1) - comb(L, N - i)
+
+
+def suggested(n, k):
+    t = 2 * n - k - 1
+    return comb(t, n - 1) - comb(t, n)
+
+
+# ------------------------------------------------------------------------ A
+print("A. spectra against the formula")
+for n in range(1, 7):
+    W, ix, M = chain((n, n))
+    obs, dev, im = spectrum(M)
+    assert all(obs.get(j, 0) == m(n, j) for j in range(2 * n + 1))
+    print("   n=%d (%4d states) ok; multiplicities from the top:" % (n, len(W)),
+          [m(n, j) for j in range(2 * n, -1, -1)])
+    if n == 5:
+        print("   n=5: max |10*lambda - integer| = %.1e, max |Im lambda| = %.1e"
+              % (dev, im / 10))
+
+# ------------------------------------------------------------------------ B
+print("B. other decks against <h_j delta_{N-j}, h_mu>")
+for mu in [(3, 2), (4, 2), (3, 3), (2, 2, 1), (3, 2, 1), (2, 1, 1, 1)]:
+    W, ix, M = chain(mu)
+    N = sum(mu)
+    obs, _, _ = spectrum(M)
+    pred = [m_content(mu, j) for j in range(N, -1, -1)]
+    assert all(obs.get(j, 0) == m_content(mu, j) for j in range(N + 1))
+    if len(mu) == 2:   # two colours: words of length N-2-j, <= a-1 R's, <= b-1 G's
+        a, b = mu
+        for j in range(N - 1):
+            L = N - 2 - j
+            assert m_content(mu, j) == sum(comb(L, g) for g in range(L + 1)
+                                           if g <= b - 1 and L - g <= a - 1)
+    print("   content", mu, "ok:", pred)
+
+
+# ------------------------------------------------------------------------ C
+def rank_exact(A):
+    """Rank over Q of an integer matrix, by integer row reduction."""
+    rows = [[int(x) for x in r] for r in A]
+    rank, ncol = 0, len(rows[0])
+    for c in range(ncol):
+        piv = next((i for i in range(rank, len(rows)) if rows[i][c]), None)
+        if piv is None:
+            continue
+        rows[rank], rows[piv] = rows[piv], rows[rank]
+        pr, a = rows[rank], rows[rank][c]
+        for i in range(rank + 1, len(rows)):
+            b = rows[i][c]
+            if b:
+                row = [a * x - b * y for x, y in zip(rows[i], pr)]
+                g = 0
+                for x in row:
+                    g = gcd(g, x)
+                rows[i] = [x // g for x in row] if g > 1 else row
+        rank += 1
+    return rank
+
+
+print("C. eigenspace dimensions: exact (n = 3, 5), and by SVD (n = 5)")
+for n in (3, 5):
+    W, ix, M = chain((n, n))
+    D = len(W)
+    tot, zero_sv, nonzero_sv = 0, 0.0, np.inf
+    for j in range(2 * n + 1):
+        A = M - j * np.eye(D, dtype=np.int64)
+        k1 = D - rank_exact(A)
+        k2 = D - rank_exact(A @ A) if k1 else 0
+        assert k1 == k2 == m(n, j)
+        tot += k1
+        sv = np.sort(np.linalg.svd(A.astype(float), compute_uv=False))
+        if k1:
+            zero_sv = max(zero_sv, sv[k1 - 1])
+        nonzero_sv = min(nonzero_sv, sv[k1])
+    assert tot == D
+    print("   n=%d: dim ker(NP - jI) = dim ker(NP - jI)^2 = m(j) for all j; total %d"
+          % (n, tot))
+print("   n=5 SVD: largest 'zero' singular value %.1e, smallest nonzero %.3f"
+      % (zero_sv, nonzero_sv))
+
+# ------------------------------------------------------------------------ D
+print("D. tr((10P)^k) = sum_j m(j) j^k, n = 5, k = 0..18")
+W, ix, M = chain((5, 5))
+D = len(W)
+Mk = np.eye(D, dtype=np.int64)
+for k in range(19):           # entries of M^k are at most 10^k: int64 is exact
+    lhs, rhs = int(np.trace(Mk)), sum(m(5, j) * j ** k for j in range(11))
+    assert lhs == rhs
+    if k in (1, 2, 5, 10, 18):
+        print("   k=%2d: %d" % (k, lhs))
+    Mk = Mk @ M
+
+# ------------------------------------------------------------------------ E
+print("E. vectors and rows quoted in the text")
+W, ix, M = chain((2, 2))
+order = [(R, R, G, G), (R, G, R, G), (R, G, G, R),
+         (G, R, R, G), (G, R, G, R), (G, G, R, R)]
+P4 = M[np.ix_([ix[w] for w in order], [ix[w] for w in order])]
+assert P4.tolist() == [[2, 1, 1, 0, 0, 0], [0, 1, 0, 2, 1, 0], [0, 0, 1, 0, 1, 2],
+                       [2, 1, 0, 1, 0, 0], [0, 1, 2, 0, 1, 0], [0, 0, 0, 1, 1, 2]]
+for lam4, v in [(4, (1, 1, 1, 1, 1, 1)), (2, (0, 1, -1, 1, -1, 0)),
+                (1, (1, -2, 1, 1, -2, 1)), (1, (1, -2, 1, -1, 2, -1)),
+                (0, (0, 1, -1, -1, 1, 0)), (0, (1, -2, 0, 0, 2, -1))]:
+    assert (P4 @ np.array(v)).tolist() == [lam4 * x for x in v]
+Ppl = np.array([[2, 1, 1], [0, 2, 2], [2, 1, 1]])
+Pmi = np.array([[2, 1, 1], [0, 0, -2], [-2, -1, 1]])
+assert sorted(np.rint(np.linalg.eigvals(Ppl).real).astype(int)) == [0, 1, 4]
+assert sorted(np.rint(np.linalg.eigvals(Pmi).real).astype(int)) == [0, 1, 2]
+W, ix, M = chain((3, 3))
+def row(s):
+    w = tuple(R if ch == 'R' else G for ch in s)
+    return {''.join('R' if c == R else 'G' for c in W[b]): int(M[ix[w], b])
+            for b in range(len(W)) if M[ix[w], b]}
+assert row('RRRGGG') == {'RRRGGG': 3, 'RRGGGR': 1, 'RRGGRG': 1, 'RRGRGG': 1}
+assert row('RGRGRG') == {'GRGRGR': 1, 'GRGRRG': 2, 'GRRGRG': 2, 'RGRGRG': 1}
+assert row('RRGGGR') == {'RGGGRR': 2, 'RGGRGR': 1, 'RGRGGR': 1, 'RRGGGR': 2}
+print("   n=2 matrix, eigenvectors and 3x3 blocks ok; n=3 sample rows ok")
+
+
+# ------------------------------------------------------------------------ F
+def orth(A, tol=1e-9):
+    U, s, _ = np.linalg.svd(A, full_matrices=False)
+    return U[:, s > tol * s.max()]
+
+
+print("F. Specht pieces and colour swap")
+for n in range(1, 7):
+    N = 2 * n
+    W, ix, M = chain((n, n))
+    D = len(W)
+    P = M / N
+    swap = np.zeros((D, D))
+    for w in W:
+        swap[ix[w], ix[tuple(1 - c for c in w)]] = 1
+    Gpos = [frozenset(p for p in range(N) if w[p] == G) for w in W]
+    Q = [orth(np.array([[1.0 if set(T) <= S else 0.0
+                         for T in itertools.combinations(range(N), i)] for S in Gpos]))
+         for i in range(n + 1)]
+    for i in range(n + 1):
+        Wi = Q[i] if i == 0 else orth(Q[i] - Q[i - 1] @ (Q[i - 1].T @ Q[i]))
+        assert Wi.shape[1] == comb(N, i) - (comb(N, i - 1) if i else 0)
+        A = Wi.T @ P @ Wi
+        assert np.abs(P @ Wi - Wi @ A).max() < 1e-9          # P preserves the piece
+        assert np.allclose(swap @ Wi, (-1) ** i * Wi)          # swap acts as (-1)^i
+        obs, _, _ = spectrum(N * A)
+        assert all(obs.get(k, 0) == piece(n, i, k) for k in range(N + 1))
+    spec = {}
+    for sg in (1, -1):
+        B = orth(np.eye(D) + sg * swap)
+        spec[sg], _, _ = spectrum(N * (B.T @ P @ B))
+    assert all(spec[1].get(k, 0) == spec[-1].get(k, 0) for k in range(N - 2))
+    assert (spec[1].get(N - 2, 0), spec[-1].get(N - 2, 0)) == (0, 1)
+    assert (spec[1].get(N, 0), spec[-1].get(N, 0)) == (1, 0)
+    print("   n=%d ok" % n)
+
+# ------------------------------------------------------------------------ G
+def Dab(a, b):
+    """Coloured derangement number D(a,b)."""
+    if a == b == 0:
+        return 1
+    return 0 if a == 0 or b == 0 else comb(a + b - 2, a - 1)
+
+
+print("G. equivalent forms, recurrence, generating function")
+for n in range(1, 31):
+    for j in range(2 * n - 1):
+        L = 2 * n - 2 - j
+        v = m(n, j)
+        assert v == sum(comb(L, i) for i in range(L + 1) if abs(2 * i - L) <= j)
+        assert v == 2 * sum(comb(L, i) for i in range(n)) - 2 ** L
+        assert v == (2 ** L if j >= n - 1
+                     else 2 ** L - 2 * sum(comb(L, i) for i in range(n - 1 - j)))
+        assert v == sum(piece(n, i, j) for i in range(1, n + 1))
+    for j in range(2 * n + 1):                   # the D(a,b) form
+        assert m(n, j) == sum(Dab(n - r, n - (j - r))
+                              for r in range(n + 1) if 0 <= j - r <= n)
+        if n <= 8:
+            assert m(n, j) == m_content((n, n), j)
+    if n >= 2:
+        for j in range(2 * n - 2):
+            assert m(n, j) == m(n, j + 1) + (m(n - 1, j - 1) if j >= 1 else 0)
+        assert m(n, 0) == m(n, 1) == comb(2 * n - 2, n - 1)
+        assert m(n, 2) == comb(2 * n - 2, n - 1) - comb(2 * n - 4, n - 2)
+        assert m(n, 2) * (n - 1) == comb(2 * n - 4, n - 2) * (3 * n - 5)
+    if n >= 3:
+        assert m(n, 3) == 2 * comb(2 * n - 4, n - 3)
+        assert (m(n, 4) * (n - 1) * (n - 2)
+                == comb(2 * n - 6, n - 3) * (5 * n * n - 25 * n + 32))
+    for k in range(2 * n - 2):                   # m(k) is even for k <= 2n-3
+        assert m(n, k) % 2 == 0
+
+T = 22                                           # series in t, coefficients polys in s
+def smul(A, B):
+    out = [Counter() for _ in range(T + 1)]
+    for i in range(T + 1):
+        for k in range(T + 1 - i):
+            for e1, c1 in A[i].items():
+                for e2, c2 in B[k].items():
+                    out[i + k][e1 + e2] += c1 * c2
+    return out
+cat = [comb(2 * k, k) // (k + 1) for k in range(T + 1)]
+u = [Counter() for _ in range(T + 1)]            # u = s t C(t)
+for k in range(T):
+    u[k + 1][1] = cat[k]
+one = [Counter({0: 1})] + [Counter() for _ in range(T)]
+ratio, p = [Counter(c) for c in one], one        # (1+u)/(1-u) = 1 + 2u + 2u^2 + ...
+for _ in range(T):
+    p = smul(p, u)
+    for i in range(T + 1):
+        for e, c in p[i].items():
+            ratio[i][e] += 2 * c
+F = smul(smul(ratio, [Counter({2 * r: 1}) for r in range(T + 1)]),
+         [Counter({0: comb(2 * k, k)}) for k in range(T + 1)])
+for n in range(1, T + 2):
+    assert {e: c for e, c in F[n - 1].items() if c} == \
+           {j: m(n, j) for j in range(2 * n - 1) if m(n, j)}
+print("   identities ok for n <= 30; generating function ok for n <= %d" % (T + 1))
+
+# ------------------------------------------------------------------------ H
+print("H. the suggested formula")
+rng = [(n, k) for n in range(1, 81) for k in range(1, 2 * n - 1)]
+hits = [(n, k) for n, k in rng if suggested(n, k) == m(n, k)]
+assert hits == [(2, 2)]
+assert all(suggested(n, k) <= m(n, k) for n, k in rng)
+for n in range(1, 31):
+    assert sum(suggested(n, k) for k in range(2 * n)) == comb(2 * n, n) // (n + 1)
+    assert suggested(n, 0) == 0
+    assert all(suggested(n, k) == piece(n, n, k - 1) for k in range(1, 2 * n))
+for n in (5, 6):
+    print("   n=%d, k=1..%d: suggested" % (n, 2 * n - 2),
+          [suggested(n, k) for k in range(1, 2 * n - 1)],
+          " actual", [m(n, k) for k in range(1, 2 * n - 1)])
+print("   agreements for 1 <= k <= 2n-2, n <= 80:", hits)
+print("all checks passed")
+```
