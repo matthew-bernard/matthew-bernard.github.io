@@ -1,32 +1,26 @@
-# thesis-notes
+# MA Thesis Notes in Statistics and Data Science
 
-Notes and code for my MA thesis in Statistics and Data Science at UC Berkeley, advised by Professor Steven Evans.
+Research notes, code, and draft chapters for my MA thesis in Statistics and Data Science at UC Berkeley, advised by Professor Steven N. Evans.
 
-## Contents
+## Live Site
+Visit the live site here: [https://matthew-bernard.github.io/](https://matthew-bernard.github.io/)
 
-- `2026-11-03-trs.qmd` — Spectral degeneracies of a topmost-to-random shuffle on balanced binary words. Renders to `2026-11-03-trs.html`.
-- `index.qmd` — Landing page with links to the notes.
-- `code/route1.py` — Trace check for the eigenvalue multiplicities, n = 1, ..., 9.
-- `code/fig_eigenvalues.py`, `fig_graph4.py`, `fig_stirling.py`, `fig_partition.py`, `fig_mixing.py` — Standalone copies of the figure code.
+## Notes & Chapters (Chronological Order)
 
-## Live site
+- **[Spectrum of the Top-to-Random Chain on Two-Coloured Words](./2026-11-10-trs/index.html)** (November 10, 2026)  
+  *A note based on discussions with Professor Steven N. Evans, analyzing the spectral properties, diagonalization, and multiplicities of the chain.*
+- **[Spectral Degeneracies of a Topmost-to-Random Shuffle on Balanced Binary Words](./2026-11-03-trs/index.html)** (November 3, 2026)  
+  *Initial explorations and investigations into top-to-random shuffles on balanced binary words.*
 
-https://matthew-bernard.github.io/
+## Repository Structure
 
-## Build
+- `index.qmd` / `index.html`: Main landing page for the site.
+- `2026-11-10-trs/`: Folder containing the November 10 note, PDF, source code, and rendered HTML.
+- `2026-11-03-trs/`: Folder containing the November 3 note, PDF, figures, and rendered HTML.
 
-Requires Quarto (https://quarto.org/) and Python with numpy, scipy, matplotlib, networkx.
+## Build Requirements
 
-    quarto render
+The site is built using [Quarto](https://quarto.org/) and Python (with `numpy`, `networkx`, `matplotlib`). To re-render the site locally, run:
 
-This produces `index.html`, `2026-11-03-trs.html`, and `2026-11-03-trs_files/` in the repository root.
-
-## Push to GitHub
-
-    git init -b main
-    git add .
-    git commit -m "Initial commit: TRS spectrum note"
-    git remote add origin https://github.com/matthew-bernard/matthew-bernard.github.io.git
-    git push -u origin main
-
-Then in the GitHub repository: Settings -> Pages -> Source: Deploy from a branch -> Branch: main, folder: / (root) -> Save.
+```bash
+quarto render
