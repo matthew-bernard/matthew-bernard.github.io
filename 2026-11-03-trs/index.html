@@ -8,7 +8,7 @@
 
 <meta name="dcterms.date" content="2026-11-10">
 
-<title>Spectrum of the Top-to-Random Chain on Two-Coloured Words – Research &amp; Code — Matthew Bernard</title>
+<title>Spectral Degeneracies of a Top-to-Random Shuffle on Balanced Binary Words – Research &amp; Code — Matthew Bernard</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -266,7 +266,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../2026-11-10-trs/index.html">Thesis notes</a></li><li class="breadcrumb-item"><a href="../2026-11-03-trs/index.html">TRS spectrum (2026-11-03)</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Spectrum of the Top-to-Random Chain on Two-Coloured Words</h1>
+<h1 class="title">Spectral Degeneracies of a Top-to-Random Shuffle on Balanced Binary Words</h1>
 <p class="subtitle lead">A note based on discussions with Professor Steven N. Evans</p>
 </div>
 
@@ -291,7 +291,10 @@ window.Quarto = {
 
 
 <blockquote class="blockquote">
-<p><strong>Abstract.</strong> Let <span class="math inline">\(\Omega_n\)</span> be the set of words containing <span class="math inline">\(n\)</span> letters <span class="math inline">\(\mathtt{R}\)</span> and <span class="math inline">\(n\)</span> letters <span class="math inline">\(\mathtt{G}\)</span>. At each step the leftmost letter is removed and reinserted, uniformly at random, into one of the <span class="math inline">\(2n\)</span> slots determined by the remaining <span class="math inline">\(2n-1\)</span> letters. We show that the transition matrix is diagonalizable, that its eigenvalues are <span class="math inline">\(1\)</span> and <span class="math inline">\(j/(2n)\)</span> for <span class="math inline">\(0\le j\le 2n-2\)</span>, and that <span class="math inline">\(j/(2n)\)</span> has multiplicity equal to the number of words of length <span class="math inline">\(2n-2-j\)</span> in <span class="math inline">\(\mathtt{R},\mathtt{G}\)</span> with at most <span class="math inline">\(n-1\)</span> copies of each letter. The proof lumps the chain from the top-to-random shuffle of <span class="math inline">\(2n\)</span> distinct cards and determines the <span class="math inline">\(\mathfrak{S}_{2n}\)</span>-module structure of the eigenspaces of that shuffle by an equivariant filtration in the spirit of Brown’s theory of left-regular bands. We work out the cases <span class="math inline">\(n\le 6\)</span> in detail; give equivalent forms of the multiplicities, a Pascal-type recurrence and a generating function; prove that the multiplicities in the lower half of the spectrum have no hypergeometric closed form; split the spectrum along the Specht modules <span class="math inline">\(S^{(2n-i,i)}\)</span>; prove that the colour-symmetric and colour-antisymmetric parts have the same spectrum apart from the two largest eigenvalues; and examine a proposed binomial formula for the multiplicities.</p>
+<p><strong>Abstract.</strong> Here is the revised abstract with “In this note:” removed, ready to be dropped straight into your November 3 <code>.qmd</code> file:</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Abstract.</strong> Let <span class="math inline">\(\Omega_n\)</span> be the set of words containing <span class="math inline">\(n\)</span> letters <span class="math inline">\(\mathtt{R}\)</span> and <span class="math inline">\(n\)</span> letters <span class="math inline">\(\mathtt{G}\)</span>. At each step, the leftmost letter is removed and reinserted, uniformly at random, into one of the <span class="math inline">\(2n\)</span> slots determined by the remaining <span class="math inline">\(2n-1\)</span> letters. We examine the spectral properties of this balanced-word top-to-random chain for parameters <span class="math inline">\(n \le 9\)</span>. By utilizing a complement-pairing symmetry, we block-diagonalize the transition matrix into symmetric and antisymmetric components to compute its exact spectrum. We show that the eigenvalues take the form <span class="math inline">\(1 - k/(2n)\)</span> for <span class="math inline">\(k \in \{0\} \cup \{2, 3, \dots, 2n\}\)</span>, with the <span class="math inline">\(k=1\)</span> eigenvalue systematically absent across all <span class="math inline">\(n \ge 1\)</span> due to inheritance from the parent top-to-random shuffle on <span class="math inline">\(S_{2n}\)</span>. Furthermore, we explore the representation-theoretic structure of the state space via Young’s rule decomposition into Specht modules <span class="math inline">\(S^{(2n-j,j)}\)</span>, analyze the partition function as a transfer-matrix reformulation, and discuss empirical mixing times relative to the classical <span class="math inline">\(n \log n\)</span> scale.</p>
 </blockquote>
 <section id="state-space" class="level2">
 <h2 class="anchored" data-anchor-id="state-space">State space</h2>

@@ -54,7 +54,7 @@ format:
         \AtEndPreamble{\crefname{table}{Table}{Tables}}
   html:
     output-file: "index.html"
-    title: "Spectrum of the Top-to-Random Chain on Two-Coloured Words"
+    title: "Spectral Degeneracies of a Top-to-Random Shuffle on Balanced Binary Words"
     subtitle: "A note based on discussions with Professor Steven N. Evans"
     date: "2026-11-10"
     theme: cosmo
@@ -77,21 +77,9 @@ execute:
 
 \vspace{1em}
 
-> **Abstract.** Let $\Omega_n$ be the set of words containing $n$ letters $\mathtt{R}$ and $n$ letters $\mathtt{G}$.
-> At each step the leftmost letter is removed and reinserted, uniformly at random, into
-> one of the $2n$ slots determined by the remaining $2n-1$ letters. We show that the
-> transition matrix is diagonalizable, that its eigenvalues are $1$ and $j/(2n)$ for
-> $0\le j\le 2n-2$, and that $j/(2n)$ has multiplicity equal to the number of words of
-> length $2n-2-j$ in $\mathtt{R},\mathtt{G}$ with at most $n-1$ copies of each letter. The proof
-> lumps the chain from the top-to-random shuffle of $2n$ distinct cards and determines
-> the $\mathfrak{S}_{2n}$-module structure of the eigenspaces of that shuffle by an equivariant
-> filtration in the spirit of Brown's theory of left-regular bands. We work out the
-> cases $n\le 6$ in detail; give equivalent forms of the multiplicities, a Pascal-type
-> recurrence and a generating function; prove that the multiplicities in the lower half
-> of the spectrum have no hypergeometric closed form; split the spectrum along the
-> Specht modules $S^{(2n-i,i)}$; prove that the colour-symmetric and colour-antisymmetric
-> parts have the same spectrum apart from the two largest eigenvalues; and examine a
-> proposed binomial formula for the multiplicities.
+> **Abstract.** Here is the revised abstract with "In this note:" removed, ready to be dropped straight into your November 3 `.qmd` file:
+
+> **Abstract.** Let $\Omega_n$ be the set of words containing $n$ letters $\mathtt{R}$ and $n$ letters $\mathtt{G}$. At each step, the leftmost letter is removed and reinserted, uniformly at random, into one of the $2n$ slots determined by the remaining $2n-1$ letters. We examine the spectral properties of this balanced-word top-to-random chain for parameters $n \le 9$. By utilizing a complement-pairing symmetry, we block-diagonalize the transition matrix into symmetric and antisymmetric components to compute its exact spectrum. We show that the eigenvalues take the form $1 - k/(2n)$ for $k \in \{0\} \cup \{2, 3, \dots, 2n\}$, with the $k=1$ eigenvalue systematically absent across all $n \ge 1$ due to inheritance from the parent top-to-random shuffle on $S_{2n}$. Furthermore, we explore the representation-theoretic structure of the state space via Young's rule decomposition into Specht modules $S^{(2n-j,j)}$, analyze the partition function as a transfer-matrix reformulation, and discuss empirical mixing times relative to the classical $n \log n$ scale.
 
 \vspace{1.5em}
 \tableofcontents
