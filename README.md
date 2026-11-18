@@ -10,7 +10,7 @@ Visit the live site here: [https://matthew-bernard.github.io/](https://matthew-b
 - **[Spectrum of the Top-to-Random Chain on Two-Coloured Words](./2026-11-10-trs/index.html)** (November 10, 2026)  
   *A note based on discussions with Professor Steven N. Evans, analyzing the spectral properties, diagonalization, and multiplicities of the chain.*
 - **[Spectral Degeneracies of a Topmost-to-Random Shuffle on Balanced Binary Words](./2026-11-03-trs/index.html)** (November 3, 2026)  
-  *Initial explorations and investigations into top-to-random shuffles on balanced binary words.*
+  *A note based on discussions with Professor Steven N. Evans, covering initial explorations and investigations into top-to-random shuffles on balanced binary words.*
 
 ## Repository Structure
 
